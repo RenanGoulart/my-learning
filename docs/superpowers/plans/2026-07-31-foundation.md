@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.4.0  
+**Plan Version:** 1.5.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -38,7 +38,7 @@
 | Ordenação | `@dnd-kit/core@6.3.1`, `@dnd-kit/sortable@10.0.0`, `@dnd-kit/utilities@3.2.2` |
 | Execução e qualidade | `tsx@4.23.1`, `@typescript/native@npm:typescript@7.0.2`, `typescript@npm:@typescript/typescript6@6.0.2`, `turbo@2.10.6`, `eslint@10.8.0`, `@eslint/js@10.0.1`, `typescript-eslint@8.65.0`, `eslint-config-next@16.2.12`, `prettier@3.9.6` |
 | Testes | `vitest@4.1.10`, `@vitest/coverage-v8@4.1.10`, `@vitejs/plugin-react@6.0.5`, `jsdom@30.0.1`, `@testing-library/react@16.3.2`, `@testing-library/user-event@14.6.1`, `@testing-library/jest-dom@7.0.0`, `@playwright/test@1.62.1`, `@axe-core/playwright@4.12.1` |
-| Tipos | `@types/node@26.1.2`, `@types/react@19.2.18`, `@types/react-dom@19.2.4` |
+| Tipos | `@types/node@24.13.3`, `@types/react@19.2.18`, `@types/react-dom@19.2.4` |
 
 Use `shadcn@4.16.1` apenas como CLI fixada. Distribua cada pacote no manifesto do workspace que o importa e confirme que todos os valores gravados permanecem exatos.
 
