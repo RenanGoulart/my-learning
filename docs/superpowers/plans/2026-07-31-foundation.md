@@ -8,8 +8,8 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 0.1.0  
-**Status:** Em revisão
+**Plan Version:** 1.0.0  
+**Status:** Aprovado
 
 ## Global Constraints
 

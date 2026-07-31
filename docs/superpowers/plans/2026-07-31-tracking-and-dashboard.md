@@ -8,8 +8,8 @@
 
 **Tech Stack:** date-fns 4.4.0, `@date-fns/tz` 1.5.0, Fastify 5.11.0, Prisma 7.9.1, Next.js 16.2.12, TanStack Query 5.101.4, shadcn, Vitest 4.1.10, Playwright 1.62.1.
 
-**Plan Version:** 0.1.0  
-**Status:** Em revisão
+**Plan Version:** 1.0.0  
+**Status:** Aprovado
 
 ## Global Constraints
 

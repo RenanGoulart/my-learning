@@ -8,8 +8,8 @@
 
 **Tech Stack:** Fastify 5.11.0, Prisma 7.9.1, Zod 4.4.3, `@fastify/type-provider-zod` 1.0.0, Next.js 16.2.12, TanStack Query 5.101.4, React Hook Form 7.83.0, dnd-kit 6.3.1/10.0.0/3.2.2, Vitest 4.1.10, Playwright 1.62.1.
 
-**Plan Version:** 0.1.0  
-**Status:** Em revisão
+**Plan Version:** 1.0.0  
+**Status:** Aprovado
 
 ## Global Constraints
 
