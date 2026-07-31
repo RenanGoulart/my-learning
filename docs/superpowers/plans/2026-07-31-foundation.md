@@ -6,15 +6,16 @@
 
 **Architecture:** `pnpm` workspaces organiza os pacotes e Turborepo orquestra tarefas com cache apenas local. A API Fastify usa composição por factories, contratos Zod e Prisma/SQLite; o Next.js consome a API diretamente e começa no Dashboard operacional.
 
-**Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
+**Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.2.0  
+**Plan Version:** 1.3.0  
 **Status:** Aprovado
 
 ## Global Constraints
 
 - Use TypeScript ESM com `strict: true`, `packageManager: pnpm@11.18.0`, `.nvmrc` igual a `24` e `engines.node` igual a `>=24 <25`.
 - Grave todas as dependências com versão exata e mantenha `save-exact=true` e `pnpm-lock.yaml`.
+- Use `@typescript/native@7.0.2` para o executável `tsc` e o alias `typescript@npm:@typescript/typescript6@6.0.3` para a API consumida pelo `typescript-eslint`.
 - Use `apps/web`, `apps/api`, `packages/contracts`, `packages/domain` e `packages/database`; não crie arquivos vazios nem abstrações sem consumidor.
 - Use Fastify puro; não instale NestJS, Express, contêiner de DI, Swagger ou gerador OpenAPI.
 - Restrinja tipos Prisma a `apps/api` e `packages/database`; contratos HTTP são schemas Zod de `@my-learning/contracts`.
@@ -34,7 +35,7 @@
 | Web | `next@16.2.12`, `react@19.2.8`, `react-dom@19.2.8`, `@tanstack/react-query@5.101.4`, `react-hook-form@7.83.0`, `@hookform/resolvers@5.5.7` |
 | UI | `tailwindcss@4.3.3`, `@tailwindcss/postcss@4.3.3`, `@base-ui/react@1.6.0`, `lucide-react@1.28.0`, `sonner@2.0.7`, `class-variance-authority@0.7.1`, `clsx@2.1.1`, `tailwind-merge@3.6.0`, `tw-animate-css@1.4.0` |
 | Ordenação | `@dnd-kit/core@6.3.1`, `@dnd-kit/sortable@10.0.0`, `@dnd-kit/utilities@3.2.2` |
-| Execução e qualidade | `tsx@4.23.1`, `typescript@7.0.2`, `turbo@2.10.6`, `eslint@10.8.0`, `@eslint/js@10.0.1`, `typescript-eslint@8.65.0`, `eslint-config-next@16.2.12`, `prettier@3.9.6` |
+| Execução e qualidade | `tsx@4.23.1`, `@typescript/native@npm:typescript@7.0.2`, `typescript@npm:@typescript/typescript6@6.0.3`, `turbo@2.10.6`, `eslint@10.8.0`, `@eslint/js@10.0.1`, `typescript-eslint@8.65.0`, `eslint-config-next@16.2.12`, `prettier@3.9.6` |
 | Testes | `vitest@4.1.10`, `@vitest/coverage-v8@4.1.10`, `@vitejs/plugin-react@6.0.5`, `jsdom@30.0.1`, `@testing-library/react@16.3.2`, `@testing-library/user-event@14.6.1`, `@testing-library/jest-dom@7.0.0`, `@playwright/test@1.62.1`, `@axe-core/playwright@4.12.1` |
 | Tipos | `@types/node@26.1.2`, `@types/react@19.2.18`, `@types/react-dom@19.2.4` |
 
@@ -105,7 +106,8 @@ Use `shadcn@4.16.1` apenas como CLI fixada. Distribua cada pacote no manifesto d
     "eslint": "10.8.0",
     "prettier": "3.9.6",
     "turbo": "2.10.6",
-    "typescript": "7.0.2",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "typescript": "npm:@typescript/typescript6@6.0.3",
     "typescript-eslint": "8.65.0"
   }
 }
