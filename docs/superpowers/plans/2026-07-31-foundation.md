@@ -6,9 +6,9 @@
 
 **Architecture:** `pnpm` workspaces organiza os pacotes e Turborepo orquestra tarefas com cache apenas local. A API Fastify usa composição por factories, contratos Zod e Prisma/SQLite; o Next.js consome a API diretamente e começa no Dashboard operacional.
 
-**Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
+**Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.0, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.6.0  
+**Plan Version:** 1.7.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -31,7 +31,7 @@
 | Área | Pacotes e versões |
 | --- | --- |
 | API | `fastify@5.11.0`, `@fastify/cors@11.3.0`, `@fastify/multipart@10.1.0`, `fastify-plugin@6.0.0`, `@fastify/type-provider-zod@1.0.0`, `pino-pretty@13.1.3` |
-| Dados | `prisma@7.9.1`, `@prisma/client@7.9.1`, `@prisma/adapter-better-sqlite3@7.9.1`, `better-sqlite3@13.0.2`, `@types/better-sqlite3@7.6.13` |
+| Dados | `prisma@7.9.0`, `@prisma/client@7.9.0`, `@prisma/adapter-better-sqlite3@7.9.0`, `better-sqlite3@13.0.2`, `@types/better-sqlite3@7.6.13` |
 | Contratos e tempo | `zod@4.4.3`, `date-fns@4.4.0`, `@date-fns/tz@1.5.0` |
 | Web | `next@16.2.12`, `react@19.2.8`, `react-dom@19.2.8`, `@tanstack/react-query@5.101.4`, `react-hook-form@7.83.0`, `@hookform/resolvers@5.5.7` |
 | UI | `tailwindcss@4.3.3`, `@tailwindcss/postcss@4.3.3`, `@base-ui/react@1.6.0`, `lucide-react@1.28.0`, `sonner@2.0.7`, `class-variance-authority@0.7.1`, `clsx@2.1.1`, `tailwind-merge@3.6.0`, `tw-animate-css@1.4.0` |
