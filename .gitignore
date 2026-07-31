@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+data/*.db
+data/*.db-*
+!data/.gitkeep
+node_modules
+dist
+.next
+.turbo
+coverage
+playwright-report
+test-results
