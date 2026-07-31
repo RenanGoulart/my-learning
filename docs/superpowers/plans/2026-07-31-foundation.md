@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.3.0  
+**Plan Version:** 1.4.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -16,6 +16,7 @@
 - Use TypeScript ESM com `strict: true`, `packageManager: pnpm@11.18.0`, `.nvmrc` igual a `24` e `engines.node` igual a `>=24 <25`.
 - Grave todas as dependências com versão exata e mantenha `save-exact=true` e `pnpm-lock.yaml`.
 - Use `@typescript/native@7.0.2` para o executável `tsc` e o alias `typescript@npm:@typescript/typescript6@6.0.2` para a API consumida pelo `typescript-eslint`.
+- Em `pnpm-workspace.yaml`, permita builds somente de `@prisma/engines`, `better-sqlite3`, `prisma`, `esbuild`, `sharp` e `unrs-resolver`.
 - Use `apps/web`, `apps/api`, `packages/contracts`, `packages/domain` e `packages/database`; não crie arquivos vazios nem abstrações sem consumidor.
 - Use Fastify puro; não instale NestJS, Express, contêiner de DI, Swagger ou gerador OpenAPI.
 - Restrinja tipos Prisma a `apps/api` e `packages/database`; contratos HTTP são schemas Zod de `@my-learning/contracts`.
@@ -122,7 +123,10 @@ packages:
 allowBuilds:
   "@prisma/engines": true
   better-sqlite3: true
+  esbuild: true
   prisma: true
+  sharp: true
+  unrs-resolver: true
 ```
 
 ```json
@@ -139,7 +143,7 @@ allowBuilds:
 }
 ```
 
-Workspace scripts are exact: shared packages use `dev: "tsc --watch"`, `build: "tsc"`, `test: "vitest run"`, `lint: "eslint src"`, `typecheck: "tsc --noEmit"`; API uses `dev: "tsx watch src/server.ts"` and the same build/test/lint/typecheck commands; web uses `dev: "next dev --port 3000"`, `build: "next build"`, `test: "vitest run"`, `test:e2e: "playwright test"`, `lint: "eslint src e2e"`, `typecheck: "tsc --noEmit"`. Each shared package exports only `{ "types": "./dist/index.d.ts", "import": "./dist/index.js" }` from `.`.
+Workspace scripts are exact: shared packages use `dev: "tsc --watch"`, `build: "tsc"`, `test: "vitest run"`, `lint: "eslint src"`, `typecheck: "tsc --noEmit"`; API uses `dev: "tsx watch src/server.ts"` and the same build/test/lint/typecheck commands; web uses `dev: "next dev --port 3000"`, `build: "next build"`, `test: "vitest run"`, `test:e2e: "playwright test"`, `lint: "eslint src"`, `typecheck: "tsc --noEmit"`. Task 6 changes the web lint script to `eslint src e2e` after it creates `apps/web/e2e/foundation.spec.ts`. Each shared package exports only `{ "types": "./dist/index.d.ts", "import": "./dist/index.js" }` from `.`.
 
 - [ ] **Step 2: Install the exact dependency graph**
 
