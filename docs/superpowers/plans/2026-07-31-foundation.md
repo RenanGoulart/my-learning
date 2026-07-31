@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.5.0  
+**Plan Version:** 1.6.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -180,6 +180,8 @@ git commit -m "build: bootstrap pnpm turbo workspace"
 **Interfaces:**
 - Consumes: aliases de pacote e Vitest da Task 1.
 - Produces: `resourceCategorySchema`, `resourceFormatSchema`, `resourceStatusSchema`, `apiErrorSchema`, `healthResponseSchema`, `calculateTrailProgress()`, `isActiveTrail()`, `assertStatusTransition()`.
+
+`isActiveTrail(statuses)` returns true only when at least one status is `IN_PROGRESS`. `assertStatusTransition(current, next)` permits only `NOT_STARTED` to `IN_PROGRESS` and `IN_PROGRESS` to `COMPLETED`; all other transitions, including the same status, throw. `healthResponseSchema` is `{ status: "ok", version: <SemVer string>, timestamp: <ISO 8601 UTC string> }`.
 
 - [ ] **Step 1: Write failing domain tests**
 
@@ -433,7 +435,7 @@ it("returns health only after a SQLite probe", async () => {
   const app = await buildTestApp();
   const response = await app.inject({ method: "GET", url: "/api/v1/health" });
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual({ status: "ok" });
+  expect(response.json()).toMatchObject({ status: "ok", version: expect.any(String), timestamp: expect.any(String) });
   await app.close();
 });
 ```
@@ -619,7 +621,7 @@ git commit -m "test: verify local application foundation"
 
 - `pnpm db:setup` creates a usable SQLite database from migrations.
 - `pnpm dev` starts shared watchers, Fastify on port `3001` and Next.js on port `3000`.
-- `/api/v1/health` performs a database probe and returns `{ "status": "ok" }`.
+- `/api/v1/health` performs a database probe and returns `{ "status": "ok", "version": "<SemVer>", "timestamp": "<ISO 8601 UTC>" }`.
 - `/api/v1/system/info` returns absolute `databasePath`, `timeZone: "America/Sao_Paulo"` and `snapshotFormatVersion: "1.0.0"`.
 - Dashboard is the first screen; desktop sidebar and mobile navigation expose all four destinations.
 - Lint, typecheck, unit/integration tests, build and foundation E2E pass.
