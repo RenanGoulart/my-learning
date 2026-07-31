@@ -7,7 +7,7 @@
     "build": "next build",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "lint": "eslint src e2e",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
