@@ -13,16 +13,16 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "vitest run",
+    "test": "vitest run --exclude=dist/**",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "db:setup": "tsx scripts/setup.ts"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "7.9.1",
-    "@prisma/client": "7.9.1",
+    "@prisma/adapter-better-sqlite3": "7.9.0",
+    "@prisma/client": "7.9.0",
     "better-sqlite3": "13.0.2",
-    "prisma": "7.9.1"
+    "prisma": "7.9.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",

@@ -6,7 +6,7 @@
 
 **Architecture:** O módulo `practices` concentra respostas e requisitos vinculados ao agregado Resource. Regras de formato são validadas nos contratos e no serviço; mutações atualizam também a recência do Resource e da Trail em uma transação. A UI reutiliza o detalhe/editor de Resource e acrescenta superfícies específicas por formato.
 
-**Tech Stack:** Fastify 5.11.0, Prisma 7.9.1, Zod 4.4.3, Next.js 16.2.12, React Hook Form 7.83.0, TanStack Query 5.101.4, dnd-kit, shadcn, Vitest 4.1.10, Playwright 1.62.1.
+**Tech Stack:** Fastify 5.11.0, Prisma 7.9.0, Zod 4.4.3, Next.js 16.2.12, React Hook Form 7.83.0, TanStack Query 5.101.4, dnd-kit, shadcn, Vitest 4.1.10, Playwright 1.62.1.
 
 **Plan Version:** 1.0.0  
 **Status:** Aprovado

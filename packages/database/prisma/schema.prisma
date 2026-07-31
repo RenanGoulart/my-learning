@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum ResourceCategory {
+  MATERIAL
+  PRACTICE
+}
+
+enum ResourceFormat {
+  COURSE
+  DOCUMENTATION
+  ARTICLE
+  VIDEO
+  BOOK
+  OTHER
+  QUESTION
+  PROBLEM
+  PROJECT
+  FLASHCARD
+}
+
+enum ResourceStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Trail {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  goal        String?
+  resources   Resource[]
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
+
+  @@index([updatedAt])
+  @@map("trails")
+}
+
+model Resource {
+  id             String               @id @default(uuid())
+  trailId        String               @map("trail_id")
+  trail          Trail                @relation(fields: [trailId], references: [id], onDelete: Cascade)
+  title          String
+  description    String?
+  category       ResourceCategory
+  format         ResourceFormat
+  status         ResourceStatus       @default(NOT_STARTED)
+  position       Int
+  url            String?
+  prompt         String?
+  flashcardFront String?               @map("flashcard_front")
+  flashcardBack  String?               @map("flashcard_back")
+  answer         PracticeAnswer?
+  requirements   ProjectRequirement[]
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([trailId, position])
+  @@index([status, updatedAt])
+  @@index([trailId, updatedAt])
+  @@map("resources")
+}
+
+model PracticeAnswer {
+  id         String   @id @default(uuid())
+  resourceId String   @unique @map("resource_id")
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  answer     String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("practice_answers")
+}
+
+model ProjectRequirement {
+  id          String   @id @default(uuid())
+  resourceId  String   @map("resource_id")
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  text        String
+  position    Int
+  isCompleted Boolean  @default(false) @map("is_completed")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([resourceId, position])
+  @@map("project_requirements")
+}
+
+model StudyCheckIn {
+  id              String   @id @default(uuid())
+  localDate       String   @unique @map("local_date")
+  note            String?
+  durationMinutes Int?     @map("duration_minutes")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("study_check_ins")
+}
