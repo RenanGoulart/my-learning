@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.0, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.7.0  
+**Plan Version:** 1.8.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -272,6 +272,8 @@ git commit -m "feat: add shared contracts and trail rules"
 **Interfaces:**
 - Consumes: root environment rules from Task 1.
 - Produces: `createPrismaClient(databasePath: string): PrismaClient`, all five persisted entities and `pnpm db:setup`.
+
+Due to the Prisma Schema Engine failure applying SQLite on this Windows environment, generate the initial SQL with `prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script --config prisma.config.ts`, version it under `prisma/migrations`, and have `db:setup` apply that SQL atomically through `better-sqlite3`. Prisma remains the source of the schema and generated client types.
 
 - [ ] **Step 1: Write a failing isolated database test**
 
