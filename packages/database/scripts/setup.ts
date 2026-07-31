@@ -1,15 +1,33 @@
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import Database from "better-sqlite3";
 
 const packageDirectory = resolve(import.meta.dirname, "..");
-const databasePath = resolve(packageDirectory, "../../data/my-learning.db");
 const migrationName = "20260731201500_initial_schema";
 const migrationPath = resolve(
   packageDirectory,
   `prisma/migrations/${migrationName}/migration.sql`,
 );
+
+function resolveDatabasePath(databaseUrl: string | undefined): string {
+  if (databaseUrl === undefined) {
+    return resolve(packageDirectory, "../../data/my-learning.db");
+  }
+
+  if (!databaseUrl.startsWith("file:")) {
+    throw new Error("DATABASE_URL deve usar o protocolo file:.");
+  }
+
+  if (databaseUrl.startsWith("file://")) {
+    return fileURLToPath(databaseUrl);
+  }
+
+  return resolve(packageDirectory, databaseUrl.slice("file:".length));
+}
+
+const databasePath = resolveDatabasePath(process.env["DATABASE_URL"]);
 
 mkdirSync(dirname(databasePath), { recursive: true });
 
