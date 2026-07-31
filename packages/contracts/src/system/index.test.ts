@@ -40,4 +40,14 @@ describe("healthResponseSchema", () => {
       }),
     ).toThrow();
   });
+
+  it("rejects numeric pre-release identifiers with leading zeroes", () => {
+    expect(() =>
+      healthResponseSchema.parse({
+        status: "ok",
+        version: "1.0.0-01",
+        timestamp: "2026-07-31T22:00:00Z",
+      }),
+    ).toThrow();
+  });
 });
