@@ -7,6 +7,7 @@ import Fastify, { type FastifyServerOptions } from "fastify";
 
 import { parseProcessConfig } from "./config.js";
 import { systemRoutes } from "./modules/system/routes.js";
+import { resourceRoutes } from "./modules/resources/routes.js";
 import { trailRoutes } from "./modules/trails/routes.js";
 import { corsPlugin } from "./plugins/cors.js";
 import { errorHandlerPlugin } from "./plugins/error-handler.js";
@@ -40,6 +41,10 @@ export async function buildApp(options: BuildAppOptions = {}) {
     prefix: "/api/v1",
   });
   await app.register(trailRoutes, {
+    clock: options.clock ?? systemClock,
+    prefix: "/api/v1",
+  });
+  await app.register(resourceRoutes, {
     clock: options.clock ?? systemClock,
     prefix: "/api/v1",
   });
