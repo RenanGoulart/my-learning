@@ -1,7 +1,7 @@
 # [RECURSO] Especificação de Requisitos: Gestão de Recursos e Materiais
 
 > **Metadados do Documento**
-> * **Versão:** 1.0.0
+> * **Versão:** 1.1.0
 > * **Data de Criação/Atualização:** 2026-07-30
 > * **Status:** Aprovado
 > * **Autor/Agente:** Agente de Requisitos IREB
@@ -14,6 +14,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **0.1.0** | 2026-07-29 | Em Revisão | Extração inicial dos requisitos de Recursos e Materiais. | Agente de Requisitos IREB |
 | **1.0.0** | 2026-07-30 | Aprovado | Requisitos validados e aprovados pelo usuário. | Usuário |
+| **1.1.0** | 2026-07-31 | Aprovado | Transições de status unidirecionais aprovadas pelo usuário. | Usuário |
 
 ## 1. Visão Geral e Contexto
 
@@ -24,7 +25,7 @@ Um Recurso pertence a uma Trilha e representa um Material ou uma Prática. Esta 
 ## 2. Regras de Negócio (RN)
 
 - **[RECURSO-RN-001] Categorias**: Um Recurso pertence exatamente a `Material` ou `Prática`.
-- **[RECURSO-RN-002] Status**: Os únicos status são `Não iniciado`, `Em andamento` e `Concluído`.
+- **[RECURSO-RN-002] Status**: Os únicos status são `Não iniciado`, `Em andamento` e `Concluído`; as transições permitidas são exclusivamente `Não iniciado` para `Em andamento` e `Em andamento` para `Concluído`.
 - **[RECURSO-RN-003] Formatos de Material**: Os formatos são `Curso`, `Documentação`, `Artigo`, `Vídeo`, `Livro` e `Outro`.
 - **[RECURSO-RN-004] Formato compatível**: Formatos de Material não são válidos para Prática e formatos de Prática não são válidos para Material.
 - **[RECURSO-RN-005] URL opcional**: A URL de Material pode ser omitida; quando informada, deve ser absoluta e usar `http` ou `https`.
@@ -70,8 +71,8 @@ Um Recurso pertence a uma Trilha e representa um Material ou uma Prática. Esta 
 - **[RECURSO-RF-005] Alterar status**
   - **Obrigatoriedade:** DEVE
   - **Prioridade de Negócio:** Alta (Must Have)
-  - **Requisito:** A plataforma DEVE permitir transições manuais entre os três status de `RECURSO-RN-002`.
-  - **Critério de Aceite:** Qualquer status válido pode substituir o atual e provoca recálculo da Trilha; outros valores são rejeitados.
+  - **Requisito:** A plataforma DEVE permitir somente as transições manuais definidas em `RECURSO-RN-002`.
+  - **Critério de Aceite:** `NOT_STARTED` somente muda para `IN_PROGRESS`; `IN_PROGRESS` somente muda para `COMPLETED`; transições regressivas, a permanência no mesmo status e outros valores são rejeitados.
 
 - **[RECURSO-RF-006] Reordenar Recurso**
   - **Obrigatoriedade:** DEVE

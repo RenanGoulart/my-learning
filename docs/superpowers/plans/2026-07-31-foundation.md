@@ -6,21 +6,23 @@
 
 **Architecture:** `pnpm` workspaces organiza os pacotes e Turborepo orquestra tarefas com cache apenas local. A API Fastify usa composição por factories, contratos Zod e Prisma/SQLite; o Next.js consome a API diretamente e começa no Dashboard operacional.
 
-**Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2, Fastify 5.11.0, Prisma 7.9.1, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
+**Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.0, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 0.1.0  
-**Status:** Em revisão
+**Plan Version:** 1.10.0  
+**Status:** Aprovado
 
 ## Global Constraints
 
 - Use TypeScript ESM com `strict: true`, `packageManager: pnpm@11.18.0`, `.nvmrc` igual a `24` e `engines.node` igual a `>=24 <25`.
 - Grave todas as dependências com versão exata e mantenha `save-exact=true` e `pnpm-lock.yaml`.
+- Use `@typescript/native@7.0.2` para o executável `tsc` e o alias `typescript@npm:@typescript/typescript6@6.0.2` para a API consumida pelo `typescript-eslint`.
+- Em `pnpm-workspace.yaml`, permita builds somente de `@prisma/engines`, `better-sqlite3`, `prisma`, `esbuild`, `sharp` e `unrs-resolver`.
 - Use `apps/web`, `apps/api`, `packages/contracts`, `packages/domain` e `packages/database`; não crie arquivos vazios nem abstrações sem consumidor.
 - Use Fastify puro; não instale NestJS, Express, contêiner de DI, Swagger ou gerador OpenAPI.
 - Restrinja tipos Prisma a `apps/api` e `packages/database`; contratos HTTP são schemas Zod de `@my-learning/contracts`.
 - Carregue o `.env` raiz com `process.loadEnvFile()`; não instale `dotenv`.
 - Use `America/Sao_Paulo` para calendário e timestamps ISO 8601 UTC para instantes.
-- Use shadcn com Base UI, estilo `base-nova`, cor base neutral, variáveis CSS, Lucide e sem modo escuro; preserve as classes geradas.
+- Use shadcn com Base UI e preset Nova, inicializado com `--base base --preset nova`, cor base neutral, variáveis CSS, Lucide e sem modo escuro; preserve as classes geradas.
 - A interface é PT-BR, abre no Dashboard, não possui landing page ou hero e deve funcionar em `1366x768` e `390x844`.
 - Referências: `docs/superpowers/specs/2026-07-29-learning-platform-mvp-design.md`, `docs/requirements/requisitos-transversais-da-plataforma-2026-07-29.md` e `docs/adr/0001-monorepo-with-separate-web-and-api.md`.
 
@@ -29,14 +31,14 @@
 | Área | Pacotes e versões |
 | --- | --- |
 | API | `fastify@5.11.0`, `@fastify/cors@11.3.0`, `@fastify/multipart@10.1.0`, `fastify-plugin@6.0.0`, `@fastify/type-provider-zod@1.0.0`, `pino-pretty@13.1.3` |
-| Dados | `prisma@7.9.1`, `@prisma/client@7.9.1`, `@prisma/adapter-better-sqlite3@7.9.1`, `better-sqlite3@13.0.2`, `@types/better-sqlite3@7.6.13` |
+| Dados | `prisma@7.9.0`, `@prisma/client@7.9.0`, `@prisma/adapter-better-sqlite3@7.9.0`, `better-sqlite3@13.0.2`, `@types/better-sqlite3@7.6.13` |
 | Contratos e tempo | `zod@4.4.3`, `date-fns@4.4.0`, `@date-fns/tz@1.5.0` |
 | Web | `next@16.2.12`, `react@19.2.8`, `react-dom@19.2.8`, `@tanstack/react-query@5.101.4`, `react-hook-form@7.83.0`, `@hookform/resolvers@5.5.7` |
 | UI | `tailwindcss@4.3.3`, `@tailwindcss/postcss@4.3.3`, `@base-ui/react@1.6.0`, `lucide-react@1.28.0`, `sonner@2.0.7`, `class-variance-authority@0.7.1`, `clsx@2.1.1`, `tailwind-merge@3.6.0`, `tw-animate-css@1.4.0` |
 | Ordenação | `@dnd-kit/core@6.3.1`, `@dnd-kit/sortable@10.0.0`, `@dnd-kit/utilities@3.2.2` |
-| Execução e qualidade | `tsx@4.23.1`, `typescript@7.0.2`, `turbo@2.10.6`, `eslint@10.8.0`, `@eslint/js@10.0.1`, `typescript-eslint@8.65.0`, `eslint-config-next@16.2.12`, `prettier@3.9.6` |
+| Execução e qualidade | `tsx@4.23.1`, `@typescript/native@npm:typescript@7.0.2`, `typescript@npm:@typescript/typescript6@6.0.2`, `turbo@2.10.6`, `eslint@10.8.0`, `@eslint/js@10.0.1`, `typescript-eslint@8.65.0`, `eslint-config-next@16.2.12`, `prettier@3.9.6` |
 | Testes | `vitest@4.1.10`, `@vitest/coverage-v8@4.1.10`, `@vitejs/plugin-react@6.0.5`, `jsdom@30.0.1`, `@testing-library/react@16.3.2`, `@testing-library/user-event@14.6.1`, `@testing-library/jest-dom@7.0.0`, `@playwright/test@1.62.1`, `@axe-core/playwright@4.12.1` |
-| Tipos | `@types/node@26.1.2`, `@types/react@19.2.18`, `@types/react-dom@19.2.4` |
+| Tipos | `@types/node@24.13.3`, `@types/react@19.2.18`, `@types/react-dom@19.2.4` |
 
 Use `shadcn@4.16.1` apenas como CLI fixada. Distribua cada pacote no manifesto do workspace que o importa e confirme que todos os valores gravados permanecem exatos.
 
@@ -105,11 +107,9 @@ Use `shadcn@4.16.1` apenas como CLI fixada. Distribua cada pacote no manifesto d
     "eslint": "10.8.0",
     "prettier": "3.9.6",
     "turbo": "2.10.6",
-    "typescript": "7.0.2",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript-eslint": "8.65.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": ["@prisma/engines", "better-sqlite3", "prisma"]
   }
 }
 ```
@@ -119,6 +119,14 @@ Use `shadcn@4.16.1` apenas como CLI fixada. Distribua cada pacote no manifesto d
 packages:
   - apps/*
   - packages/*
+
+allowBuilds:
+  "@prisma/engines": true
+  better-sqlite3: true
+  esbuild: true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
 ```
 
 ```json
@@ -135,7 +143,7 @@ packages:
 }
 ```
 
-Workspace scripts are exact: shared packages use `dev: "tsc --watch"`, `build: "tsc"`, `test: "vitest run"`, `lint: "eslint src"`, `typecheck: "tsc --noEmit"`; API uses `dev: "tsx watch src/server.ts"` and the same build/test/lint/typecheck commands; web uses `dev: "next dev --port 3000"`, `build: "next build"`, `test: "vitest run"`, `test:e2e: "playwright test"`, `lint: "eslint src e2e"`, `typecheck: "tsc --noEmit"`. Each shared package exports only `{ "types": "./dist/index.d.ts", "import": "./dist/index.js" }` from `.`.
+Workspace scripts are exact: shared packages use `dev: "tsc --watch"`, `build: "tsc"`, `test: "vitest run"`, `lint: "eslint src"`, `typecheck: "tsc --noEmit"`; API uses `dev: "tsx watch src/server.ts"` and the same build/test/lint/typecheck commands; web uses `dev: "next dev --port 3000"`, `build: "next build"`, `test: "vitest run"`, `test:e2e: "playwright test"`, `lint: "eslint src"`, `typecheck: "tsc --noEmit"`. Task 6 changes the web lint script to `eslint src e2e` after it creates `apps/web/e2e/foundation.spec.ts`. Each shared package exports only `{ "types": "./dist/index.d.ts", "import": "./dist/index.js" }` from `.`.
 
 - [ ] **Step 2: Install the exact dependency graph**
 
@@ -172,6 +180,8 @@ git commit -m "build: bootstrap pnpm turbo workspace"
 **Interfaces:**
 - Consumes: aliases de pacote e Vitest da Task 1.
 - Produces: `resourceCategorySchema`, `resourceFormatSchema`, `resourceStatusSchema`, `apiErrorSchema`, `healthResponseSchema`, `calculateTrailProgress()`, `isActiveTrail()`, `assertStatusTransition()`.
+
+`isActiveTrail(statuses)` returns true only when at least one status is `IN_PROGRESS`. `assertStatusTransition(current, next)` permits only `NOT_STARTED` to `IN_PROGRESS` and `IN_PROGRESS` to `COMPLETED`; all other transitions, including the same status, throw. `healthResponseSchema` is `{ status: "ok", version: "1.0.0", timestamp: <ISO 8601 UTC string> }`.
 
 - [ ] **Step 1: Write failing domain tests**
 
@@ -262,6 +272,8 @@ git commit -m "feat: add shared contracts and trail rules"
 **Interfaces:**
 - Consumes: root environment rules from Task 1.
 - Produces: `createPrismaClient(databasePath: string): PrismaClient`, all five persisted entities and `pnpm db:setup`.
+
+Due to the Prisma Schema Engine failure applying SQLite on this Windows environment, generate the initial SQL with `prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script --config prisma.config.ts`, version it under `prisma/migrations`, and have `db:setup` apply that SQL atomically through `better-sqlite3`. Prisma remains the source of the schema and generated client types.
 
 - [ ] **Step 1: Write a failing isolated database test**
 
@@ -425,7 +437,7 @@ it("returns health only after a SQLite probe", async () => {
   const app = await buildTestApp();
   const response = await app.inject({ method: "GET", url: "/api/v1/health" });
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual({ status: "ok" });
+  expect(response.json()).toMatchObject({ status: "ok", version: expect.any(String), timestamp: expect.any(String) });
   await app.close();
 });
 ```
@@ -469,7 +481,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
 }
 ```
 
-`server.ts` must call `process.loadEnvFile(rootEnvPath)`, listen using `API_HOST`/`API_PORT`, and call `app.close()` on `SIGINT` and `SIGTERM`. The global handler maps Zod/Fastify validation to `400` or `422`, `AppError` to its status, known Prisma conflicts to `409`, missing records to `404`, and unexpected failures to `500` without exposing Prisma details.
+`server.ts` must call `process.loadEnvFile(rootEnvPath)`, listen using `API_HOST`/`API_PORT`, and call `app.close()` on `SIGINT` and `SIGTERM`. The global handler maps malformed JSON and invalid route/query parameters to `400`, a JSON body that violates its schema to `422`, `AppError` to its status, known Prisma conflicts to `409`, missing records to `404`, and unexpected failures to `500` without exposing Prisma details.
 
 - [ ] **Step 4: Run API tests**
 
@@ -516,8 +528,8 @@ Expected: FAIL because the shell and client do not exist.
 
 - [ ] **Step 3: Initialize and generate shadcn components**
 
-Run from `apps/web`: `pnpm dlx shadcn@4.16.1 init --style base-nova --base-color neutral --css-variables`  
-Expected: `components.json` uses `style: "base-nova"`, `iconLibrary: "lucide"`, `rsc: true`, alias `@/components`, and generated styles retain shadcn defaults.
+Run from `apps/web`: `pnpm dlx shadcn@4.16.1 init --base base --preset nova --base-color neutral --css-variables`  
+Expected: the generated configuration uses Base UI with the Nova preset, `iconLibrary: "lucide"`, `rsc: true`, alias `@/components`, and generated styles retain shadcn defaults.
 
 Run from `apps/web`: `pnpm dlx shadcn@4.16.1 add button sheet tooltip alert card sonner`  
 Expected: components generated only under `src/components/ui`.
@@ -611,7 +623,7 @@ git commit -m "test: verify local application foundation"
 
 - `pnpm db:setup` creates a usable SQLite database from migrations.
 - `pnpm dev` starts shared watchers, Fastify on port `3001` and Next.js on port `3000`.
-- `/api/v1/health` performs a database probe and returns `{ "status": "ok" }`.
+- `/api/v1/health` performs a database probe and returns `{ "status": "ok", "version": "1.0.0", "timestamp": "<ISO 8601 UTC>" }`.
 - `/api/v1/system/info` returns absolute `databasePath`, `timeZone: "America/Sao_Paulo"` and `snapshotFormatVersion: "1.0.0"`.
 - Dashboard is the first screen; desktop sidebar and mobile navigation expose all four destinations.
 - Lint, typecheck, unit/integration tests, build and foundation E2E pass.

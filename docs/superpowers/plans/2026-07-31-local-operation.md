@@ -6,10 +6,10 @@
 
 **Architecture:** Um snapshot Zod estrito e versionado é a fronteira de portabilidade. Exportação lê uma visão coerente em transação; preview valida sem persistir; importação recebe novamente o arquivo, revalida e substitui o conjunto completo em uma única transação. Configurações expõe informações locais e as duas operações sem estado intermediário no servidor.
 
-**Tech Stack:** Fastify 5.11.0, `@fastify/multipart` 10.1.0, Prisma 7.9.1, Zod 4.4.3, Next.js 16.2.12, shadcn, Vitest 4.1.10, Playwright 1.62.1, `@axe-core/playwright` 4.12.1.
+**Tech Stack:** Fastify 5.11.0, `@fastify/multipart` 10.1.0, Prisma 7.9.0, Zod 4.4.3, Next.js 16.2.12, shadcn, Vitest 4.1.10, Playwright 1.62.1, `@axe-core/playwright` 4.12.1.
 
-**Plan Version:** 0.1.0  
-**Status:** Em revisão
+**Plan Version:** 1.0.0  
+**Status:** Aprovado
 
 ## Global Constraints
 

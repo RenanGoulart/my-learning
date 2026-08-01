@@ -94,7 +94,7 @@ Each Trail includes an ordered list of Resources. The order is manual and adviso
 
 Trail progress is derived from completed Resources. A Trail with no Resources has 0% progress and is not complete. A Trail with at least one Resource is complete when all its Resources are complete.
 
-Progress and completion are recalculated whenever a Resource is added, removed, or changes status. Adding an incomplete Resource or changing a completed Resource to another status reopens the Trail. Removing the final Resource returns the Trail to 0% and not complete.
+Progress and completion are recalculated whenever a Resource is added, removed, or changes status. Adding an incomplete Resource reopens the Trail. Removing the final Resource returns the Trail to 0% and not complete.
 
 Deleting a Trail requires confirmation that shows how many Resources will also be removed. The deletion atomically removes the Trail, all its Resources, and all Practice answers and Project requirements belonging to those Resources.
 
@@ -212,8 +212,8 @@ Important rules:
 - Trail progress is derived, not manually assigned.
 - A Trail with no Resources has 0% progress and is not complete.
 - A Trail is complete only when it has at least one Resource and every Resource is complete.
-- A Trail is active when it has at least one Resource and is not complete. Active is derived and is not a manually stored status.
-- Resource status has exactly three states: `Não iniciado`, `Em andamento`, `Concluído`, represented by `NOT_STARTED`, `IN_PROGRESS`, and `COMPLETED`.
+- A Trail is active when it has at least one Resource with status `IN_PROGRESS`. Active is derived and is not a manually stored status.
+- Resource status has exactly three states: `Não iniciado`, `Em andamento`, `Concluído`, represented by `NOT_STARTED`, `IN_PROGRESS`, and `COMPLETED`; allowed transitions are only `NOT_STARTED` to `IN_PROGRESS` and `IN_PROGRESS` to `COMPLETED`.
 - Resource format must belong to its category; Material formats are invalid for a Practice and Practice formats are invalid for a Material.
 - Resource category and format conversion preserves common fields, status, and manual order while atomically removing incompatible type-specific data after explicit confirmation.
 - A Material URL is optional, but when present it must be an absolute `http` or `https` URL. Local paths and all other protocols are invalid.

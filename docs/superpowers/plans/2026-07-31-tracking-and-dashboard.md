@@ -6,10 +6,10 @@
 
 **Architecture:** Regras de calendário e streak ficam puras em `@my-learning/domain`, usando `date-fns` e `@date-fns/tz` com um `Clock` injetável. A API é a autoridade para a data atual de São Paulo e agrega Check-ins, Trilhas e Recursos; a UI usa essa data sem confiar no fuso do navegador.
 
-**Tech Stack:** date-fns 4.4.0, `@date-fns/tz` 1.5.0, Fastify 5.11.0, Prisma 7.9.1, Next.js 16.2.12, TanStack Query 5.101.4, shadcn, Vitest 4.1.10, Playwright 1.62.1.
+**Tech Stack:** date-fns 4.4.0, `@date-fns/tz` 1.5.0, Fastify 5.11.0, Prisma 7.9.0, Next.js 16.2.12, TanStack Query 5.101.4, shadcn, Vitest 4.1.10, Playwright 1.62.1.
 
-**Plan Version:** 0.1.0  
-**Status:** Em revisão
+**Plan Version:** 1.0.0  
+**Status:** Aprovado
 
 ## Global Constraints
 
