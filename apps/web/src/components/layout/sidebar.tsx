@@ -3,13 +3,13 @@ import Link from "next/link";
 const destinations = [
   { href: "/", label: "Dashboard" },
   { href: "/trilhas", label: "Trilhas" },
-  { href: "/historico", label: "Historico" },
-  { href: "/configuracoes", label: "Configuracoes" },
+  { href: "/historico", label: "Histórico" },
+  { href: "/configuracoes", label: "Configurações" },
 ];
 
 export function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <nav aria-label="Navegacao principal" className="flex flex-col gap-1">
+    <nav aria-label="Navegação principal" className="flex flex-col gap-1">
       {destinations.map((destination) => (
         <Link
           className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"

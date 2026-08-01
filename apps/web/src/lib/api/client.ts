@@ -12,7 +12,14 @@ export class ApiClientError extends Error {
 }
 
 async function parseApiError(response: Response): Promise<ApiClientError> {
-  const body = apiErrorSchema.safeParse(await response.json());
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    payload = undefined;
+  }
+
+  const body = apiErrorSchema.safeParse(payload);
   const error = body.success
     ? body.data
     : {

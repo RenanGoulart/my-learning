@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { AppShell } from "./app-shell.js";
@@ -7,7 +8,7 @@ describe("AppShell", () => {
   it("renders the operational destinations", () => {
     render(
       <AppShell>
-        <main>Conteudo</main>
+        <main>Conteúdo</main>
       </AppShell>,
     );
 
@@ -19,25 +20,29 @@ describe("AppShell", () => {
       "href",
       "/trilhas",
     );
-    expect(screen.getByRole("link", { name: "Historico" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Histórico" })).toHaveAttribute(
       "href",
       "/historico",
     );
-    expect(screen.getByRole("link", { name: "Configuracoes" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Configurações" })).toHaveAttribute(
       "href",
       "/configuracoes",
     );
   });
 
-  it("exposes an accessible mobile navigation trigger", () => {
+  it("opens and closes the mobile sheet accessibly", async () => {
+    const user = userEvent.setup();
     render(
       <AppShell>
-        <main>Conteudo</main>
+        <main>Conteúdo</main>
       </AppShell>,
     );
 
-    expect(
-      screen.getByRole("button", { name: "Abrir navegacao" }),
-    ).toBeVisible();
+    const trigger = screen.getByRole("button", { name: "Abrir navegação" });
+    await user.click(trigger);
+
+    expect(screen.getByRole("dialog")).toHaveAttribute("aria-modal", "true");
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveFocus();
   });
 });

@@ -18,24 +18,24 @@ export default function Page() {
       <div>
         <h1 className="text-2xl font-semibold">Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Visao geral dos seus estudos.
+          Visão geral dos seus estudos.
         </p>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Servico local</CardTitle>
+          <CardTitle>Serviço local</CardTitle>
         </CardHeader>
         <CardContent>
           {health.isPending ? (
             <p className="text-sm text-muted-foreground">
-              Verificando conexao...
+              Verificando conexão...
             </p>
           ) : null}
           {health.isError ? (
-            <Alert>O servico local nao esta disponivel.</Alert>
+            <Alert>O serviço local não está disponível.</Alert>
           ) : null}
           {health.data ? (
-            <p className="text-sm">Conectado. Versao {health.data.version}.</p>
+            <p className="text-sm">Conectado. Versão {health.data.version}.</p>
           ) : null}
         </CardContent>
       </Card>
@@ -51,7 +51,7 @@ export default function Page() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Proximos estudos</CardTitle>
+          <CardTitle>Próximos estudos</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">

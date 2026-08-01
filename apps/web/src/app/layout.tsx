@@ -2,24 +2,31 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { AppShell } from "@/components/layout/app-shell";
-import { Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/lib/query/provider";
 
 import "./globals.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "My Learning",
-  description: "Gestao pessoal de estudos.",
+  description: "Gestão pessoal de estudos.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
       <body>
-        <QueryProvider>
-          <AppShell>{children}</AppShell>
-          <Sonner />
-        </QueryProvider>
+        <TooltipProvider>
+          <QueryProvider>
+            <AppShell>{children}</AppShell>
+            <Toaster theme="light" />
+          </QueryProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

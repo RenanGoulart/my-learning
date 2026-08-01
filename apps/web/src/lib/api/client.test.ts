@@ -42,7 +42,7 @@ describe("apiRequest", () => {
       vi.fn().mockResolvedValue(
         new Response(
           JSON.stringify({
-            error: { code: "VALIDATION_ERROR", message: "Dados invalidos" },
+            error: { code: "VALIDATION_ERROR", message: "Dados inválidos" },
           }),
           { status: 422 },
         ),
@@ -55,7 +55,31 @@ describe("apiRequest", () => {
       new ApiClientError(
         422,
         apiErrorSchema.parse({
-          error: { code: "VALIDATION_ERROR", message: "Dados invalidos" },
+          error: { code: "VALIDATION_ERROR", message: "Dados inválidos" },
+        }),
+      ),
+    );
+  });
+
+  it("converts a non-JSON error response into the fallback API error", async () => {
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://127.0.0.1:3001");
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(new Response("<html>Erro</html>", { status: 502 })),
+    );
+
+    await expect(
+      apiRequest("/api/v1/health", healthResponseSchema),
+    ).rejects.toEqual(
+      new ApiClientError(
+        502,
+        apiErrorSchema.parse({
+          error: {
+            code: "UNEXPECTED_ERROR",
+            message: "Ocorreu um erro inesperado.",
+          },
         }),
       ),
     );
