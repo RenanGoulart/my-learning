@@ -13,6 +13,21 @@ vi.mock("./api", () => ({ createTrail }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
 describe("TrailForm", () => {
+  it("does not register beforeunload while the form is pristine", () => {
+    const addEventListener = vi.spyOn(window, "addEventListener");
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <TrailForm mode="create" />
+      </QueryClientProvider>,
+    );
+
+    expect(addEventListener).not.toHaveBeenCalledWith(
+      "beforeunload",
+      expect.any(Function),
+    );
+    addEventListener.mockRestore();
+  });
+
   it("keeps entered values and associates a server field error", async () => {
     createTrail.mockRejectedValueOnce(
       new ApiClientError(422, {

@@ -1,11 +1,19 @@
 "use client";
 
-import { Dialog } from "@base-ui/react/dialog";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { getTrail } from "./api";
 import { useDeleteTrail } from "./queries";
@@ -36,7 +44,7 @@ export function DeleteTrailButton({ trailId }: { trailId: string }) {
     }
   }
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       {error ? (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
@@ -49,20 +57,22 @@ export function DeleteTrailButton({ trailId }: { trailId: string }) {
       >
         Excluir trilha
       </Button>
-      <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 bg-black/20" />
-        <Dialog.Popup className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-background p-6 shadow-lg">
-          <Dialog.Title className="text-base font-medium">
+      <AlertDialogPortal>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogTitle className="text-base font-medium">
             Excluir {trail?.title}?
-          </Dialog.Title>
-          <Dialog.Description className="mt-2 text-sm text-muted-foreground">
+          </AlertDialogTitle>
+          <AlertDialogDescription className="mt-2 text-sm text-muted-foreground">
             Esta ação excluirá permanentemente {trail?.resources.length ?? 0}{" "}
             {trail?.resources.length === 1 ? "recurso" : "recursos"}.
-          </Dialog.Description>
+          </AlertDialogDescription>
           <div className="mt-5 flex justify-end gap-2">
-            <Dialog.Close render={<Button type="button" variant="outline" />}>
+            <AlertDialogCancel
+              render={<Button type="button" variant="outline" />}
+            >
               Cancelar
-            </Dialog.Close>
+            </AlertDialogCancel>
             <Button
               disabled={remove.isPending}
               onClick={() => void confirmDelete()}
@@ -72,8 +82,8 @@ export function DeleteTrailButton({ trailId }: { trailId: string }) {
               Excluir
             </Button>
           </div>
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialog>
   );
 }

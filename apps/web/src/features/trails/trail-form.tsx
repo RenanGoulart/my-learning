@@ -59,8 +59,8 @@ export function TrailForm({
   const mutation = mode === "create" ? createMutation : updateMutation;
 
   useEffect(() => {
+    if (!form.formState.isDirty) return;
     const confirm = (event: BeforeUnloadEvent) => {
-      if (!form.formState.isDirty) return;
       event.preventDefault();
       event.returnValue = "";
     };
