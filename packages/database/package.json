@@ -11,8 +11,10 @@
     "dist"
   ],
   "scripts": {
+    "generate": "prisma generate",
+    "predev": "pnpm generate",
     "dev": "tsc --watch",
-    "prebuild": "prisma generate",
+    "prebuild": "pnpm generate",
     "build": "tsc -p tsconfig.build.json && node scripts/verify-build.mjs",
     "test": "vitest run --exclude=dist/**",
     "lint": "eslint src",

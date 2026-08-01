@@ -10,7 +10,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "test": "turbo test",
-    "test:e2e": "pnpm --filter @my-learning/web test:e2e",
+    "test:e2e": "pnpm --filter @my-learning/web exec playwright test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "format": "prettier --write .",

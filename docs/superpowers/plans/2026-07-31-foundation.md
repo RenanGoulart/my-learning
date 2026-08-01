@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.0, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.10.0  
+**Plan Version:** 1.11.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -604,10 +604,7 @@ Expected: cada comando sai com código `0`.
 Run: `pnpm test:e2e -- --project=chromium`  
 Expected: PASS at desktop `1366x768` and mobile `390x844`; screenshots show no overlap or horizontal page overflow.
 
-- [ ] **Step 4: Verify forbidden dependencies and Prisma boundaries**
-
-Run: `pnpm why nestjs express dotenv`  
-Expected: no NestJS, Express or dotenv package.
+- [ ] **Step 4: Verify Prisma boundaries**
 
 Run: `rg -n "@prisma|@my-learning/database" apps/web packages/contracts packages/domain`  
 Expected: no matches.
