@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ResourceOrderList } from "@/features/resources/resource-order-list";
 
 import { DeleteTrailButton } from "./delete-trail-button";
 import { useTrail } from "./queries";
@@ -36,6 +37,9 @@ export function TrailDetail({ trailId }: { trailId: string }) {
           >
             Editar
           </Button>
+          <Button render={<Link href={`/trilhas/${trailId}/recursos/novo`} />}>
+            Novo recurso
+          </Button>
           <DeleteTrailButton trailId={trailId} />
         </div>
       </div>
@@ -60,13 +64,10 @@ export function TrailDetail({ trailId }: { trailId: string }) {
             Nenhum recurso cadastrado.
           </p>
         ) : (
-          <ol className="mt-3 divide-y divide-border border-y border-border">
-            {trail.data.resources.map((resource) => (
-              <li className="py-3" key={resource.id}>
-                {resource.title}
-              </li>
-            ))}
-          </ol>
+          <ResourceOrderList
+            resources={trail.data.resources}
+            trailId={trailId}
+          />
         )}
       </section>
     </div>
