@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js 24 LTS, pnpm 11.18.0, Turborepo 2.10.6, TypeScript 7.0.2 com API de compatibilidade TypeScript 6 para lint, Fastify 5.11.0, Prisma 7.9.0, SQLite, Next.js 16.2.12, React 19.2.8, shadcn 4.16.1, Tailwind CSS 4.3.3, Vitest 4.1.10.
 
-**Plan Version:** 1.9.0  
+**Plan Version:** 1.10.0  
 **Status:** Aprovado
 
 ## Global Constraints
@@ -22,7 +22,7 @@
 - Restrinja tipos Prisma a `apps/api` e `packages/database`; contratos HTTP são schemas Zod de `@my-learning/contracts`.
 - Carregue o `.env` raiz com `process.loadEnvFile()`; não instale `dotenv`.
 - Use `America/Sao_Paulo` para calendário e timestamps ISO 8601 UTC para instantes.
-- Use shadcn com Base UI, estilo `base-nova`, cor base neutral, variáveis CSS, Lucide e sem modo escuro; preserve as classes geradas.
+- Use shadcn com Base UI e preset Nova, inicializado com `--base base --preset nova`, cor base neutral, variáveis CSS, Lucide e sem modo escuro; preserve as classes geradas.
 - A interface é PT-BR, abre no Dashboard, não possui landing page ou hero e deve funcionar em `1366x768` e `390x844`.
 - Referências: `docs/superpowers/specs/2026-07-29-learning-platform-mvp-design.md`, `docs/requirements/requisitos-transversais-da-plataforma-2026-07-29.md` e `docs/adr/0001-monorepo-with-separate-web-and-api.md`.
 
@@ -528,8 +528,8 @@ Expected: FAIL because the shell and client do not exist.
 
 - [ ] **Step 3: Initialize and generate shadcn components**
 
-Run from `apps/web`: `pnpm dlx shadcn@4.16.1 init --style base-nova --base-color neutral --css-variables`  
-Expected: `components.json` uses `style: "base-nova"`, `iconLibrary: "lucide"`, `rsc: true`, alias `@/components`, and generated styles retain shadcn defaults.
+Run from `apps/web`: `pnpm dlx shadcn@4.16.1 init --base base --preset nova --base-color neutral --css-variables`  
+Expected: the generated configuration uses Base UI with the Nova preset, `iconLibrary: "lucide"`, `rsc: true`, alias `@/components`, and generated styles retain shadcn defaults.
 
 Run from `apps/web`: `pnpm dlx shadcn@4.16.1 add button sheet tooltip alert card sonner`  
 Expected: components generated only under `src/components/ui`.
