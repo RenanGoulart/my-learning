@@ -17,7 +17,15 @@ export type AppConfig = {
   databasePath: string;
 };
 
-const projectRoot = resolve(import.meta.dirname, "../../../");
+export function resolveProjectRoot(moduleDirectory: string): string {
+  return resolve(moduleDirectory, "../../..");
+}
+
+export function resolveRootEnvPath(moduleDirectory: string): string {
+  return resolve(resolveProjectRoot(moduleDirectory), ".env");
+}
+
+const projectRoot = resolveProjectRoot(import.meta.dirname);
 
 export function parseConfig(
   environment: Record<string, string | undefined>,

@@ -1,10 +1,7 @@
-import { resolve } from "node:path";
-
-const rootEnvPath = resolve(import.meta.dirname, "../../../.env");
-process.loadEnvFile(rootEnvPath);
-
 const { buildApp } = await import("./app.js");
-const { parseProcessConfig } = await import("./config.js");
+const { parseProcessConfig, resolveRootEnvPath } = await import("./config.js");
+
+process.loadEnvFile(resolveRootEnvPath(import.meta.dirname));
 
 const config = parseProcessConfig();
 const app = await buildApp();
