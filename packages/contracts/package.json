@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json && pnpm check:artifacts",
+    "check:artifacts": "node --input-type=module --eval \"import { access } from 'node:fs/promises'; await Promise.all(['dist/index.js', 'dist/index.d.ts'].map((path) => access(path)));\"",
     "test": "vitest run",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit"
