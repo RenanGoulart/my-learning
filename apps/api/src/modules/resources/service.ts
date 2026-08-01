@@ -203,16 +203,13 @@ export function createResourceService(deps: {
       return toDetail(resource);
     },
     async updateStatus(id: string, status: ResourceStatus) {
-      const current = await deps.repository.findDetail(id);
-      if (!current) {
-        throw notFound();
-      }
-      const transitions = {
-        NOT_STARTED: "IN_PROGRESS",
-        IN_PROGRESS: "COMPLETED",
-        COMPLETED: null,
-      } as const;
-      if (transitions[current.status] !== status) {
+      const expectedStatus =
+        status === "IN_PROGRESS"
+          ? "NOT_STARTED"
+          : status === "COMPLETED"
+            ? "IN_PROGRESS"
+            : null;
+      if (!expectedStatus) {
         throw new AppError({
           code: "INVALID_RESOURCE_STATUS_TRANSITION",
           message: "A transição de status informada não é permitida.",
@@ -221,13 +218,21 @@ export function createResourceService(deps: {
       }
       const resource = await deps.repository.updateStatus({
         id,
+        expectedStatus,
         status,
         now: deps.clock.now(),
       });
-      if (!resource) {
+      if (resource.kind === "notFound") {
         throw notFound();
       }
-      return toDetail(resource);
+      if (resource.kind === "invalidTransition") {
+        throw new AppError({
+          code: "INVALID_RESOURCE_STATUS_TRANSITION",
+          message: "A transição de status informada não é permitida.",
+          statusCode: 422,
+        });
+      }
+      return toDetail(resource.resource);
     },
     async reorder(trailId: string, resourceIds: string[]) {
       if (!(await deps.repository.findTrail(trailId))) {

@@ -87,25 +87,41 @@ export function createResourceRepository(prisma: PrismaClient) {
     },
     async updateStatus(input: {
       id: string;
+      expectedStatus: "NOT_STARTED" | "IN_PROGRESS";
       status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
       now: Date;
     }) {
       return prisma.$transaction(async (tx) => {
-        const resource = await tx.resource.findUnique({
-          where: { id: input.id },
-        });
-        if (!resource) {
-          return null;
-        }
-        await tx.resource.update({
-          where: { id: input.id },
+        const updated = await tx.resource.updateMany({
+          where: { id: input.id, status: input.expectedStatus },
           data: { status: input.status, updatedAt: input.now },
+        });
+        if (updated.count === 0) {
+          const resource = await tx.resource.findUnique({
+            where: { id: input.id },
+            select: { id: true },
+          });
+          return resource
+            ? { kind: "invalidTransition" as const }
+            : { kind: "notFound" as const };
+        }
+
+        const resource = await tx.resource.findUniqueOrThrow({
+          where: { id: input.id },
+          select: { trailId: true },
         });
         await tx.trail.update({
           where: { id: resource.trailId },
           data: { updatedAt: input.now },
         });
-        return findDetailIn(tx, input.id);
+        const detail = await findDetailIn(tx, input.id);
+        if (!detail) {
+          throw new Error("O recurso atualizado não pôde ser carregado.");
+        }
+        return {
+          kind: "updated" as const,
+          resource: detail,
+        };
       });
     },
     async reorder(input: {

@@ -13,6 +13,8 @@ import {
   createTestDatabase,
   fixedClock,
 } from "../trails/trails.fixtures.js";
+import type { ResourceRepository, ResourceWithDetails } from "./repository.js";
+import { createResourceService } from "./service.js";
 
 async function buildTestApp() {
   const database = createTestDatabase();
@@ -40,6 +42,58 @@ async function createMaterial(
 }
 
 describe("resource routes", () => {
+  it("delegates status transition with the required current status", async () => {
+    const now = new Date("2026-08-01T12:00:00.000Z");
+    let input: unknown;
+    const repository = {
+      findDetail: () => {
+        throw new Error(
+          "Status must not be read before the conditional update.",
+        );
+      },
+      updateStatus: (value: unknown) => {
+        input = value;
+        return {
+          kind: "updated",
+          resource: {
+            id: "00000000-0000-4000-8000-000000000000",
+            trailId: "00000000-0000-4000-8000-000000000001",
+            title: "A",
+            description: null,
+            category: "MATERIAL",
+            format: "ARTICLE",
+            status: "IN_PROGRESS",
+            position: 1,
+            url: null,
+            prompt: null,
+            flashcardFront: null,
+            flashcardBack: null,
+            answer: null,
+            requirements: [],
+            createdAt: now,
+            updatedAt: now,
+          } satisfies ResourceWithDetails,
+        };
+      },
+    } as unknown as ResourceRepository;
+    const service = createResourceService({
+      repository,
+      clock: { now: () => now },
+    });
+
+    await service.updateStatus(
+      "00000000-0000-4000-8000-000000000000",
+      "IN_PROGRESS",
+    );
+
+    expect(input).toEqual({
+      id: "00000000-0000-4000-8000-000000000000",
+      expectedStatus: "NOT_STARTED",
+      status: "IN_PROGRESS",
+      now,
+    });
+  });
+
   it("appends resources and persists a complete contiguous reorder", async () => {
     const { app, database } = await buildTestApp();
     const trail = await buildTrail(app);
@@ -148,6 +202,34 @@ describe("resource routes", () => {
       url: `/api/v1/trails/${trail.id}`,
     });
     expect(trailDetailSchema.parse(detail.json()).isComplete).toBe(true);
+    await app.close();
+    database.remove();
+  });
+
+  it("accepts only one concurrent status transition", async () => {
+    const { app, database } = await buildTestApp();
+    const trail = await buildTrail(app);
+    const resource = await createMaterial(app, trail.id, "A");
+
+    const responses = await Promise.all(
+      ["first", "second"].map(() =>
+        app.inject({
+          method: "PATCH",
+          url: `/api/v1/resources/${resource.id}/status`,
+          payload: { status: "IN_PROGRESS" },
+        }),
+      ),
+    );
+
+    expect(responses.map(({ statusCode }) => statusCode).sort()).toEqual([
+      200, 422,
+    ]);
+    expect(
+      await app.prisma.resource.findUniqueOrThrow({
+        where: { id: resource.id },
+        select: { status: true },
+      }),
+    ).toEqual({ status: "IN_PROGRESS" });
     await app.close();
     database.remove();
   });
