@@ -36,3 +36,7 @@ pnpm test:e2e -- --project=chromium
 ```
 
 O teste E2E abre o Dashboard em `1366x768` e `390x844`, validando a navegacao e a ausencia de rolagem horizontal da pagina.
+
+## Fluxo de Entrega
+
+Cada tarefa e realizada em um worktree isolado. Depois que as gates aplicaveis forem aprovadas, a tarefa DEVE ser commitada, enviada ao repositorio remoto e aberta em um pull request para `main`. A integracao ocorre somente apos o merge desse PR.
