@@ -65,6 +65,34 @@ function toSummary(
   };
 }
 
+function incompatiblePatchFields(
+  resource: ResourceWithDetails,
+  input: PatchResourceInput,
+) {
+  const fields: Record<string, string[]> = {};
+  const add = (
+    field: "url" | "prompt" | "flashcardFront" | "flashcardBack",
+  ) => {
+    fields[field] = ["Campo incompatível com o tipo de recurso."];
+  };
+
+  if (resource.category === "MATERIAL") {
+    if (input.prompt !== undefined) add("prompt");
+    if (input.flashcardFront !== undefined) add("flashcardFront");
+    if (input.flashcardBack !== undefined) add("flashcardBack");
+    return fields;
+  }
+
+  if (input.url !== undefined) add("url");
+  if (resource.format === "FLASHCARD") {
+    if (input.prompt !== undefined) add("prompt");
+  } else {
+    if (input.flashcardFront !== undefined) add("flashcardFront");
+    if (input.flashcardBack !== undefined) add("flashcardBack");
+  }
+  return fields;
+}
+
 export function createResourceService(deps: {
   repository: ResourceRepository;
   clock: Clock;
@@ -114,6 +142,19 @@ export function createResourceService(deps: {
     },
     get,
     async update(id: string, input: PatchResourceInput) {
+      const current = await deps.repository.findDetail(id);
+      if (!current) {
+        throw notFound();
+      }
+      const fieldErrors = incompatiblePatchFields(current, input);
+      if (Object.keys(fieldErrors).length > 0) {
+        throw new AppError({
+          code: "VALIDATION_ERROR",
+          message: "Os dados informados são inválidos.",
+          fieldErrors,
+          statusCode: 422,
+        });
+      }
       const data: Prisma.ResourceUpdateInput = {};
       if (input.title !== undefined) data.title = input.title;
       if (input.description !== undefined) data.description = input.description;

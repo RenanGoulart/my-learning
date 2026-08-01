@@ -1,4 +1,5 @@
 import {
+  apiErrorSchema,
   resourceDetailSchema,
   resourceSummarySchema,
   trailDetailSchema,
@@ -175,6 +176,89 @@ describe("resource routes", () => {
     });
     expect(deleted.statusCode).toBe(204);
     expect(await app.prisma.practiceAnswer.count()).toBe(0);
+    await app.close();
+    database.remove();
+  });
+
+  it("rejects PATCH fields incompatible with the persisted resource type", async () => {
+    const { app, database } = await buildTestApp();
+    const trail = await buildTrail(app);
+    const material = await createMaterial(app, trail.id, "Material");
+    const practice = await app.inject({
+      method: "POST",
+      url: `/api/v1/trails/${trail.id}/resources`,
+      payload: {
+        title: "Question",
+        category: "PRACTICE",
+        format: "QUESTION",
+        prompt: "What?",
+      },
+    });
+
+    const materialUpdate = await app.inject({
+      method: "PATCH",
+      url: `/api/v1/resources/${material.id}`,
+      payload: { prompt: "Not allowed" },
+    });
+    const practiceUpdate = await app.inject({
+      method: "PATCH",
+      url: `/api/v1/resources/${resourceDetailSchema.parse(practice.json()).id}`,
+      payload: { url: "https://example.com" },
+    });
+
+    expect(materialUpdate.statusCode).toBe(422);
+    expect(
+      apiErrorSchema.parse(materialUpdate.json()).error.fieldErrors,
+    ).toEqual({
+      prompt: ["Campo incompatível com o tipo de recurso."],
+    });
+    expect(practiceUpdate.statusCode).toBe(422);
+    expect(
+      apiErrorSchema.parse(practiceUpdate.json()).error.fieldErrors,
+    ).toEqual({
+      url: ["Campo incompatível com o tipo de recurso."],
+    });
+    await app.close();
+    database.remove();
+  });
+
+  it("rejects invalid reorders without changing positions or timestamps", async () => {
+    const { app, database } = await buildTestApp();
+    const trail = await buildTrail(app);
+    const otherTrail = await buildTrail(app, "Other");
+    const first = await createMaterial(app, trail.id, "First");
+    const second = await createMaterial(app, trail.id, "Second");
+    const foreign = await createMaterial(app, otherTrail.id, "Foreign");
+    const before = await app.prisma.resource.findMany({
+      where: { trailId: trail.id },
+      orderBy: { position: "asc" },
+      select: { id: true, position: true, updatedAt: true },
+    });
+
+    for (const resourceIds of [
+      [first.id],
+      [first.id, first.id],
+      [first.id, foreign.id],
+    ]) {
+      const response = await app.inject({
+        method: "PUT",
+        url: `/api/v1/trails/${trail.id}/resources/order`,
+        payload: { resourceIds },
+      });
+      expect(response.statusCode).toBe(422);
+      expect(apiErrorSchema.parse(response.json()).error.code).toBe(
+        "INVALID_RESOURCE_ORDER",
+      );
+      expect(
+        await app.prisma.resource.findMany({
+          where: { trailId: trail.id },
+          orderBy: { position: "asc" },
+          select: { id: true, position: true, updatedAt: true },
+        }),
+      ).toEqual(before);
+    }
+
+    expect(second.position).toBe(2);
     await app.close();
     database.remove();
   });
