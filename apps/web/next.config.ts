@@ -11,6 +11,7 @@ if (existsSync(envFile)) {
 }
 
 export default {
+  allowedDevOrigins: ["127.0.0.1"],
   output: "standalone",
   transpilePackages: ["@my-learning/contracts"],
 };
