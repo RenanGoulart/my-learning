@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { NavigationLinks } from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +14,10 @@ import {
 import { MenuIcon } from "lucide-react";
 
 export function MobileNavigation() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Sheet modal>
+    <Sheet modal onOpenChange={setOpen} open={open}>
       <SheetTrigger
         render={
           <Button aria-label="Abrir navegação" size="icon" variant="outline">
@@ -25,7 +29,7 @@ export function MobileNavigation() {
         <SheetHeader>
           <SheetTitle>Navegação</SheetTitle>
         </SheetHeader>
-        <NavigationLinks />
+        <NavigationLinks onNavigate={() => setOpen(false)} />
       </SheetContent>
     </Sheet>
   );

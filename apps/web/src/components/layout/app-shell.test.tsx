@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
@@ -44,5 +44,20 @@ describe("AppShell", () => {
     expect(screen.getByRole("dialog")).toHaveAttribute("aria-modal", "true");
     await user.keyboard("{Escape}");
     expect(trigger).toHaveFocus();
+  });
+
+  it("closes the mobile sheet when navigating", async () => {
+    const user = userEvent.setup();
+    render(
+      <AppShell>
+        <main>Conteúdo</main>
+      </AppShell>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Abrir navegação" }));
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByRole("link", { name: "Trilhas" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
