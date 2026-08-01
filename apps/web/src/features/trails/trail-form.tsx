@@ -6,7 +6,7 @@ import {
   type TrailDetail,
 } from "@my-learning/contracts";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { cloneElement, isValidElement, useEffect, type ReactElement } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -100,7 +100,11 @@ export function TrailForm({
           </AlertDescription>
         </Alert>
       ) : null}
-      <Field label="Título" error={form.formState.errors.title?.message}>
+      <Field
+        id="title"
+        label="Título"
+        error={form.formState.errors.title?.message}
+      >
         <input
           aria-invalid={Boolean(form.formState.errors.title)}
           className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -108,6 +112,7 @@ export function TrailForm({
         />
       </Field>
       <Field
+        id="description"
         label="Descrição"
         error={form.formState.errors.description?.message}
       >
@@ -116,7 +121,11 @@ export function TrailForm({
           {...form.register("description")}
         />
       </Field>
-      <Field label="Objetivo" error={form.formState.errors.goal?.message}>
+      <Field
+        id="goal"
+        label="Objetivo"
+        error={form.formState.errors.goal?.message}
+      >
         <textarea
           className="min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
           {...form.register("goal")}
@@ -132,20 +141,28 @@ export function TrailForm({
 function Field({
   children,
   error,
+  id,
   label,
 }: {
   children: React.ReactNode;
   error: string | undefined;
+  id: string;
   label: string;
 }) {
+  const errorId = `${id}-error`;
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium">
+      <label className="text-sm font-medium" htmlFor={id}>
         {label}
-        {children}
       </label>
+      {isValidElement(children)
+        ? cloneElement(children as ReactElement<{ id?: string; "aria-describedby"?: string }>, {
+          id,
+          ...(error ? { "aria-describedby": errorId } : {}),
+        })
+        : children}
       {error ? (
-        <p className="text-sm text-destructive" role="alert">
+        <p className="text-sm text-destructive" id={errorId} role="alert">
           {error}
         </p>
       ) : null}

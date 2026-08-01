@@ -51,5 +51,9 @@ describe("TrailForm", () => {
 
     expect(screen.getByLabelText("Título")).toHaveValue("Minha trilha");
     expect(screen.getByRole("alert")).toHaveTextContent("Informe o título.");
+    expect(screen.getByLabelText("Título")).toHaveAttribute(
+      "aria-describedby",
+      "title-error",
+    );
   });
 });
