@@ -222,6 +222,59 @@ describe("resource routes", () => {
     database.remove();
   });
 
+  it("rejects clearing fields required by the persisted practice format", async () => {
+    const { app, database } = await buildTestApp();
+    const trail = await buildTrail(app);
+    const question = await app.inject({
+      method: "POST",
+      url: `/api/v1/trails/${trail.id}/resources`,
+      payload: {
+        title: "Question",
+        category: "PRACTICE",
+        format: "QUESTION",
+        prompt: "What?",
+      },
+    });
+    const flashcard = await app.inject({
+      method: "POST",
+      url: `/api/v1/trails/${trail.id}/resources`,
+      payload: {
+        title: "Flashcard",
+        category: "PRACTICE",
+        format: "FLASHCARD",
+        flashcardFront: "Front",
+        flashcardBack: "Back",
+      },
+    });
+
+    const clearedPrompt = await app.inject({
+      method: "PATCH",
+      url: `/api/v1/resources/${resourceDetailSchema.parse(question.json()).id}`,
+      payload: { prompt: null },
+    });
+    const clearedFlashcard = await app.inject({
+      method: "PATCH",
+      url: `/api/v1/resources/${resourceDetailSchema.parse(flashcard.json()).id}`,
+      payload: { flashcardFront: null, flashcardBack: null },
+    });
+
+    expect(clearedPrompt.statusCode).toBe(422);
+    expect(
+      apiErrorSchema.parse(clearedPrompt.json()).error.fieldErrors,
+    ).toEqual({
+      prompt: ["Campo obrigatório para o formato do recurso."],
+    });
+    expect(clearedFlashcard.statusCode).toBe(422);
+    expect(
+      apiErrorSchema.parse(clearedFlashcard.json()).error.fieldErrors,
+    ).toEqual({
+      flashcardFront: ["Campo obrigatório para o formato do recurso."],
+      flashcardBack: ["Campo obrigatório para o formato do recurso."],
+    });
+    await app.close();
+    database.remove();
+  });
+
   it("rejects invalid reorders without changing positions or timestamps", async () => {
     const { app, database } = await buildTestApp();
     const trail = await buildTrail(app);
@@ -233,6 +286,10 @@ describe("resource routes", () => {
       where: { trailId: trail.id },
       orderBy: { position: "asc" },
       select: { id: true, position: true, updatedAt: true },
+    });
+    const beforeTrail = await app.prisma.trail.findUniqueOrThrow({
+      where: { id: trail.id },
+      select: { updatedAt: true },
     });
 
     for (const resourceIds of [
@@ -256,6 +313,12 @@ describe("resource routes", () => {
           select: { id: true, position: true, updatedAt: true },
         }),
       ).toEqual(before);
+      expect(
+        await app.prisma.trail.findUniqueOrThrow({
+          where: { id: trail.id },
+          select: { updatedAt: true },
+        }),
+      ).toEqual(beforeTrail);
     }
 
     expect(second.position).toBe(2);

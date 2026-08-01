@@ -86,9 +86,35 @@ function incompatiblePatchFields(
   if (input.url !== undefined) add("url");
   if (resource.format === "FLASHCARD") {
     if (input.prompt !== undefined) add("prompt");
+    const flashcardFront =
+      input.flashcardFront === undefined
+        ? resource.flashcardFront
+        : input.flashcardFront;
+    const flashcardBack =
+      input.flashcardBack === undefined
+        ? resource.flashcardBack
+        : input.flashcardBack;
+    if (flashcardFront === null) {
+      fields["flashcardFront"] = [
+        "Campo obrigatório para o formato do recurso.",
+      ];
+    }
+    if (flashcardBack === null) {
+      fields["flashcardBack"] = [
+        "Campo obrigatório para o formato do recurso.",
+      ];
+    }
   } else {
     if (input.flashcardFront !== undefined) add("flashcardFront");
     if (input.flashcardBack !== undefined) add("flashcardBack");
+    if (
+      (resource.format === "QUESTION" ||
+        resource.format === "PROBLEM" ||
+        resource.format === "PROJECT") &&
+      (input.prompt === undefined ? resource.prompt : input.prompt) === null
+    ) {
+      fields["prompt"] = ["Campo obrigatório para o formato do recurso."];
+    }
   }
   return fields;
 }
