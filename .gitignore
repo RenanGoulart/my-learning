@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+data/*.db
+data/*.db-*
+!data/.gitkeep
+packages/database/src/generated
+node_modules
+dist
+.next
+.turbo
+coverage
+playwright-report
+test-results
+.superpowers
