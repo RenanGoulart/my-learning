@@ -1,10 +1,16 @@
 import type {
+  ConvertResourceInput,
   CreateResourceInput,
   PatchResourceInput,
 } from "@my-learning/contracts";
 import type { FastifyReply } from "fastify";
 
 type ResourceService = {
+  preview(
+    id: string,
+    input: Pick<ConvertResourceInput, "targetCategory" | "targetFormat">,
+  ): Promise<unknown>;
+  convert(id: string, input: ConvertResourceInput): Promise<unknown>;
   create(trailId: string, input: CreateResourceInput): Promise<unknown>;
   get(id: string): Promise<unknown>;
   update(id: string, input: PatchResourceInput): Promise<unknown>;
@@ -17,6 +23,20 @@ type ResourceStatus = "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
 
 export function createResourceController(service: ResourceService) {
   return {
+    preview: ({
+      params,
+      body,
+    }: {
+      params: { resourceId: string };
+      body: Pick<ConvertResourceInput, "targetCategory" | "targetFormat">;
+    }) => service.preview(params.resourceId, body),
+    convert: ({
+      params,
+      body,
+    }: {
+      params: { resourceId: string };
+      body: ConvertResourceInput;
+    }) => service.convert(params.resourceId, body),
     async create(
       {
         params,

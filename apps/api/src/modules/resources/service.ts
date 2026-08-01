@@ -1,4 +1,5 @@
 import type {
+  ConvertResourceInput,
   CreateResourceInput,
   PatchResourceInput,
 } from "@my-learning/contracts";
@@ -6,6 +7,7 @@ import type { Prisma } from "@my-learning/database";
 
 import type { Clock } from "../../shared/clock.js";
 import { AppError } from "../../shared/errors/app-error.js";
+import { discardedFields, isPromptFormat } from "./conversion.js";
 import type { ResourceRepository, ResourceWithDetails } from "./repository.js";
 
 type ResourceStatus = "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
@@ -132,6 +134,79 @@ export function createResourceService(deps: {
   }
 
   return {
+    async preview(
+      id: string,
+      target: Pick<ConvertResourceInput, "targetCategory" | "targetFormat">,
+    ) {
+      const resource = await deps.repository.findDetail(id);
+      if (!resource) throw notFound();
+      return {
+        resourceId: resource.id,
+        resourceUpdatedAt: resource.updatedAt.toISOString(),
+        targetCategory: target.targetCategory,
+        targetFormat: target.targetFormat,
+        discardedFields: discardedFields(resource, target),
+      };
+    },
+    async convert(id: string, input: ConvertResourceInput) {
+      const current = await deps.repository.findDetail(id);
+      if (!current) throw notFound();
+      if (
+        current.updatedAt.toISOString() !== input.expectedUpdatedAt ||
+        (current.category === input.targetCategory &&
+          current.format === input.targetFormat)
+      ) {
+        throw new AppError({
+          code: "RESOURCE_CHANGED",
+          message: "O recurso foi alterado. Revise a conversÃ£o novamente.",
+          statusCode: 409,
+        });
+      }
+      if (
+        discardedFields(current, input).length > 0 &&
+        !input.discardConfirmed
+      ) {
+        throw new AppError({
+          code: "DISCARD_CONFIRMATION_REQUIRED",
+          message: "Confirme o descarte dos dados incompatÃ­veis.",
+          statusCode: 409,
+        });
+      }
+      const resource = await deps.repository.convert({
+        id,
+        expectedUpdatedAt: new Date(input.expectedUpdatedAt),
+        expectedCategory: current.category,
+        expectedFormat: current.format,
+        targetCategory: input.targetCategory,
+        targetFormat: input.targetFormat,
+        url: input.targetCategory === "MATERIAL" ? (input.url ?? null) : null,
+        prompt:
+          input.targetCategory === "PRACTICE" &&
+          isPromptFormat(input.targetFormat)
+            ? (input.prompt ?? null)
+            : null,
+        flashcardFront:
+          input.targetFormat === "FLASHCARD"
+            ? (input.flashcardFront ?? null)
+            : null,
+        flashcardBack:
+          input.targetFormat === "FLASHCARD"
+            ? (input.flashcardBack ?? null)
+            : null,
+        requirements:
+          input.targetFormat === "PROJECT" ? (input.requirements ?? []) : [],
+        now: deps.clock.now(),
+      });
+      if (resource.kind === "notFound") throw notFound();
+      if (resource.kind === "changed") {
+        throw new AppError({
+          code: "RESOURCE_CHANGED",
+          message: "O recurso foi alterado. Revise a conversÃ£o novamente.",
+          statusCode: 409,
+        });
+      }
+      return toDetail(resource.resource);
+    },
     async create(trailId: string, input: CreateResourceInput) {
       const now = deps.clock.now();
       const data: Prisma.ResourceCreateWithoutTrailInput = {

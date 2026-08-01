@@ -124,6 +124,87 @@ export function createResourceRepository(prisma: PrismaClient) {
         };
       });
     },
+    async convert(input: {
+      id: string;
+      expectedUpdatedAt: Date;
+      expectedCategory: "MATERIAL" | "PRACTICE";
+      expectedFormat: Prisma.ResourceCreateWithoutTrailInput["format"];
+      targetCategory: "MATERIAL" | "PRACTICE";
+      targetFormat: Prisma.ResourceCreateWithoutTrailInput["format"];
+      url: string | null;
+      prompt: string | null;
+      flashcardFront: string | null;
+      flashcardBack: string | null;
+      requirements: Array<{ text: string }>;
+      now: Date;
+    }) {
+      return prisma.$transaction(async (tx) => {
+        const updated = await tx.resource.updateMany({
+          where: {
+            id: input.id,
+            updatedAt: input.expectedUpdatedAt,
+            category: input.expectedCategory,
+            format: input.expectedFormat,
+          },
+          data: {
+            category: input.targetCategory,
+            format: input.targetFormat,
+            url: input.url,
+            prompt: input.prompt,
+            flashcardFront: input.flashcardFront,
+            flashcardBack: input.flashcardBack,
+            updatedAt: input.now,
+          },
+        });
+        if (updated.count === 0) {
+          const exists = await tx.resource.findUnique({
+            where: { id: input.id },
+            select: { id: true },
+          });
+          return exists
+            ? { kind: "changed" as const }
+            : { kind: "notFound" as const };
+        }
+        if (
+          input.targetCategory === "MATERIAL" ||
+          input.targetFormat === "FLASHCARD"
+        ) {
+          await tx.practiceAnswer.deleteMany({
+            where: { resourceId: input.id },
+          });
+        }
+        if (input.targetFormat !== "PROJECT") {
+          await tx.projectRequirement.deleteMany({
+            where: { resourceId: input.id },
+          });
+        } else {
+          await tx.projectRequirement.deleteMany({
+            where: { resourceId: input.id },
+          });
+          await tx.projectRequirement.createMany({
+            data: input.requirements.map((requirement, index) => ({
+              resourceId: input.id,
+              text: requirement.text,
+              position: index + 1,
+              createdAt: input.now,
+              updatedAt: input.now,
+            })),
+          });
+        }
+        const resource = await tx.resource.findUniqueOrThrow({
+          where: { id: input.id },
+          select: { trailId: true },
+        });
+        await tx.trail.update({
+          where: { id: resource.trailId },
+          data: { updatedAt: input.now },
+        });
+        const detail = await findDetailIn(tx, input.id);
+        if (!detail)
+          throw new Error("O recurso convertido nÃ£o pÃ´de ser carregado.");
+        return { kind: "converted" as const, resource: detail };
+      });
+    },
     async reorder(input: {
       trailId: string;
       resourceIds: string[];

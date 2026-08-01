@@ -1,4 +1,6 @@
 import {
+  conversionPreviewSchema,
+  convertResourceInputSchema,
   createResourceInputSchema,
   patchResourceInputSchema,
   reorderResourcesInputSchema,
@@ -17,6 +19,39 @@ import { createResourceService } from "./service.js";
 const resourceIdParamsSchema = z.strictObject({ resourceId: z.uuid() });
 const trailIdParamsSchema = z.strictObject({ trailId: z.uuid() });
 const statusBodySchema = z.strictObject({ status: resourceStatusSchema });
+const conversionTargetSchema = z
+  .strictObject({
+    targetCategory: z.enum(["MATERIAL", "PRACTICE"]),
+    targetFormat: z.enum([
+      "COURSE",
+      "DOCUMENTATION",
+      "ARTICLE",
+      "VIDEO",
+      "BOOK",
+      "OTHER",
+      "QUESTION",
+      "PROBLEM",
+      "PROJECT",
+      "FLASHCARD",
+    ]),
+  })
+  .superRefine(({ targetCategory, targetFormat }, context) => {
+    const isMaterial = [
+      "COURSE",
+      "DOCUMENTATION",
+      "ARTICLE",
+      "VIDEO",
+      "BOOK",
+      "OTHER",
+    ].includes(targetFormat);
+    if ((targetCategory === "MATERIAL") !== isMaterial) {
+      context.addIssue({
+        code: "custom",
+        path: ["targetFormat"],
+        message: "Formato incompatÃ­vel com a categoria.",
+      });
+    }
+  });
 
 type ResourceRoutesOptions = { clock?: Clock };
 
@@ -75,6 +110,36 @@ export const resourceRoutes: FastifyPluginCallback<ResourceRoutesOptions> = (
     },
     (request) =>
       controller.get({ params: resourceIdParamsSchema.parse(request.params) }),
+  );
+  app.post(
+    "/resources/:resourceId/conversion-preview",
+    {
+      schema: {
+        params: resourceIdParamsSchema,
+        body: conversionTargetSchema,
+        response: { 200: conversionPreviewSchema },
+      },
+    },
+    (request) =>
+      controller.preview({
+        params: resourceIdParamsSchema.parse(request.params),
+        body: conversionTargetSchema.parse(request.body),
+      }),
+  );
+  app.post(
+    "/resources/:resourceId/convert",
+    {
+      schema: {
+        params: resourceIdParamsSchema,
+        body: convertResourceInputSchema,
+        response: { 200: resourceDetailSchema },
+      },
+    },
+    (request) =>
+      controller.convert({
+        params: resourceIdParamsSchema.parse(request.params),
+        body: convertResourceInputSchema.parse(request.body),
+      }),
   );
   app.patch(
     "/resources/:resourceId",
