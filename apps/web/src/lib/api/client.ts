@@ -54,3 +54,19 @@ export async function apiRequest<T>(
 
   return schema.parse(await response.json());
 }
+
+export async function apiRequestVoid(
+  path: string,
+  init?: RequestInit,
+): Promise<void> {
+  const headers = new Headers(init?.headers);
+  const response = await fetch(`${process.env["NEXT_PUBLIC_API_URL"]}${path}`, {
+    ...init,
+    headers,
+    signal: init?.signal ?? AbortSignal.timeout(15_000),
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+}
