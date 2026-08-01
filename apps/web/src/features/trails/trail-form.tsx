@@ -6,7 +6,12 @@ import {
   type TrailDetail,
 } from "@my-learning/contracts";
 import { useRouter } from "next/navigation";
-import { cloneElement, isValidElement, useEffect, type ReactElement } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  type ReactElement,
+} from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -156,10 +161,16 @@ function Field({
         {label}
       </label>
       {isValidElement(children)
-        ? cloneElement(children as ReactElement<{ id?: string; "aria-describedby"?: string }>, {
-          id,
-          ...(error ? { "aria-describedby": errorId } : {}),
-        })
+        ? cloneElement(
+            children as ReactElement<{
+              id?: string;
+              "aria-describedby"?: string;
+            }>,
+            {
+              id,
+              ...(error ? { "aria-describedby": errorId } : {}),
+            },
+          )
         : children}
       {error ? (
         <p className="text-sm text-destructive" id={errorId} role="alert">
