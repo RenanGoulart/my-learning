@@ -1,11 +1,40 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("trilhas e recursos", () => {
-  test("exibe a lista de trilhas sem overflow horizontal", async ({ page }) => {
-    await page.goto("/trilhas");
-    const hasNoOverflow = await page
-      .locator("body")
-      .evaluate((body) => body.scrollWidth <= window.innerWidth);
-    expect(hasNoOverflow).toBe(true);
+  test("cria, ordena, progride, converte e exclui recursos", async ({ page }) => {
+    await page.goto("/trilhas/nova");
+    await page.getByLabel("Título").fill("Trilha E2E");
+    await page.getByRole("button", { name: "Salvar" }).click();
+    await expect(page.getByRole("heading", { name: "Trilha E2E" })).toBeVisible();
+    const trailPath = page.url();
+    await page.getByRole("link", { name: "Novo recurso" }).click();
+    await page.getByLabel("Título").fill("Material A");
+    await page.getByLabel("URL").fill("https://example.com/a");
+    await page.getByRole("button", { name: "Salvar" }).click();
+    await page.goto(trailPath);
+    await page.getByRole("link", { name: "Novo recurso" }).click();
+    await page.getByLabel("Título").fill("Material B");
+    await page.getByLabel("URL").fill("https://example.com/b");
+    await page.getByRole("button", { name: "Salvar" }).click();
+    await page.goto(trailPath);
+    await page.getByRole("button", { name: "Mover Material A para baixo" }).focus();
+    await expect(page.getByRole("button", { name: "Mover Material A para baixo" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("ol")).toContainText(["Material B", "Material A"]);
+    await page.getByText("Material A").click();
+    await page.getByRole("radio", { name: "Em andamento" }).click();
+    await page.goto(trailPath);
+    await expect(page.getByText("0%")).toBeVisible();
+    await page.getByText("Material A").click();
+    await page.getByLabel("Nova categoria").selectOption("PRACTICE");
+    await page.getByLabel("Novo formato").selectOption("QUESTION");
+    await page.getByRole("button", { name: "Verificar conversão" }).click();
+    await page.getByLabel("Confirmo o descarte dos dados listados").check();
+    await page.getByLabel("Enunciado da conversão").fill("Explique A");
+    await page.getByRole("button", { name: "Converter" }).click();
+    await page.getByRole("button", { name: "Excluir recurso" }).click();
+    await page.getByRole("button", { name: "Excluir" }).last().click();
+    const noOverflow = await page.locator("body").evaluate((body) => body.scrollWidth <= window.innerWidth);
+    expect(noOverflow).toBe(true);
   });
 });
