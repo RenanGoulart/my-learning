@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { previewResourceConversion } from "./api";
+import { convertResource, previewResourceConversion } from "./api";
 const names: Record<string, string> = {
   url: "URL",
   prompt: "Enunciado",
@@ -16,6 +16,9 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
   const [preview, setPreview] = useState<{ discardedFields: string[] } | null>(
     null,
   );
+  const [expectedUpdatedAt, setExpectedUpdatedAt] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [prompt, setPrompt] = useState("");
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-medium">Converter recurso</h2>
@@ -53,7 +56,11 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
           void previewResourceConversion(resourceId, {
             targetCategory: category,
             targetFormat: format,
-          }).then(setPreview)
+          }).then((result) => {
+            setPreview(result);
+            setExpectedUpdatedAt(result.resourceUpdatedAt);
+            setConfirmed(false);
+          })
         }
         type="button"
         variant="outline"
@@ -73,6 +80,8 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
               <label className="flex gap-2 text-sm">
                 <input
                   aria-label="Confirmo o descarte dos dados listados"
+                  checked={confirmed}
+                  onChange={(event) => setConfirmed(event.target.checked)}
                   type="checkbox"
                 />
                 Confirmo o descarte dos dados listados
@@ -82,6 +91,39 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
             <p>Nenhum dado será descartado.</p>
           )}
         </div>
+      ) : null}
+      {category === "PRACTICE" &&
+      ["QUESTION", "PROBLEM", "PROJECT"].includes(format) ? (
+        <label className="block text-sm">
+          Enunciado
+          <textarea
+            aria-label="Enunciado da conversão"
+            className="mt-1 block w-full"
+            onChange={(event) => setPrompt(event.target.value)}
+            value={prompt}
+          />
+        </label>
+      ) : null}
+      {preview ? (
+        <Button
+          disabled={preview.discardedFields.length > 0 && !confirmed}
+          onClick={() =>
+            void convertResource(resourceId, {
+              targetCategory: category,
+              targetFormat: format as any,
+              expectedUpdatedAt,
+              discardConfirmed:
+                preview.discardedFields.length === 0 || confirmed,
+              ...(category === "PRACTICE" &&
+              ["QUESTION", "PROBLEM", "PROJECT"].includes(format)
+                ? { prompt }
+                : {}),
+            })
+          }
+          type="button"
+        >
+          Converter
+        </Button>
       ) : null}
     </section>
   );

@@ -1,4 +1,9 @@
 "use client";
+import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,34 +29,52 @@ export function ResourceOrderList({
     [next[index], next[target]] = [next[target], next[index]];
     mutation.mutate(next.map((resource) => resource.id));
   };
+  const onDragEnd = (event: DragEndEvent) => {
+    if (!event.over || event.active.id === event.over.id) return;
+    const ids = resources.map((resource) => resource.id);
+    const from = ids.indexOf(String(event.active.id));
+    const to = ids.indexOf(String(event.over.id));
+    if (from < 0 || to < 0) return;
+    const [moved] = ids.splice(from, 1);
+    if (!moved) return;
+    ids.splice(to, 0, moved);
+    mutation.mutate(ids);
+  };
   return (
     <TooltipProvider>
-      <ol className="divide-y divide-border border-y border-border">
-        {resources.map((resource, index) => (
-          <li
-            className="flex min-h-12 items-center justify-between gap-3 py-2"
-            key={resource.id}
-          >
-            <span>{resource.title}</span>
-            <span className="flex gap-1">
-              <MoveButton
-                disabled={index === 0}
-                label={`Mover ${resource.title} para cima`}
-                onClick={() => move(index, -1)}
+      <DndContext onDragEnd={onDragEnd}>
+        <SortableContext
+          items={resources.map((resource) => resource.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <ol className="divide-y divide-border border-y border-border">
+            {resources.map((resource, index) => (
+              <li
+                className="flex min-h-12 items-center justify-between gap-3 py-2"
+                key={resource.id}
               >
-                <ArrowUp />
-              </MoveButton>
-              <MoveButton
-                disabled={index === resources.length - 1}
-                label={`Mover ${resource.title} para baixo`}
-                onClick={() => move(index, 1)}
-              >
-                <ArrowDown />
-              </MoveButton>
-            </span>
-          </li>
-        ))}
-      </ol>
+                <span>{resource.title}</span>
+                <span className="flex gap-1">
+                  <MoveButton
+                    disabled={index === 0}
+                    label={`Mover ${resource.title} para cima`}
+                    onClick={() => move(index, -1)}
+                  >
+                    <ArrowUp />
+                  </MoveButton>
+                  <MoveButton
+                    disabled={index === resources.length - 1}
+                    label={`Mover ${resource.title} para baixo`}
+                    onClick={() => move(index, 1)}
+                  >
+                    <ArrowDown />
+                  </MoveButton>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </SortableContext>
+      </DndContext>
     </TooltipProvider>
   );
 }

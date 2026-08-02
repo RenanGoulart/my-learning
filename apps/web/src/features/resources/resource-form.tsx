@@ -5,7 +5,12 @@ import {
   type ResourceDetail,
 } from "@my-learning/contracts";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  useEffect,
+} from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -92,16 +97,28 @@ export function ResourceForm({
           </AlertDescription>
         </Alert>
       ) : null}
-      <Field label="Título">
+      <Field
+        error={form.formState.errors.title?.message}
+        id="resource-title"
+        label="Título"
+      >
         <input {...form.register("title")} />
       </Field>
-      <Field label="Categoria">
+      <Field
+        error={form.formState.errors.category?.message}
+        id="resource-category"
+        label="Categoria"
+      >
         <select {...form.register("category")} disabled={mode === "edit"}>
           <option value="MATERIAL">Material</option>
           <option value="PRACTICE">Prática</option>
         </select>
       </Field>
-      <Field label="Formato">
+      <Field
+        error={form.formState.errors.format?.message}
+        id="resource-format"
+        label="Formato"
+      >
         <select {...form.register("format")} disabled={mode === "edit"}>
           {formats[category].map((item) => (
             <option key={item} value={item}>
@@ -110,23 +127,40 @@ export function ResourceForm({
           ))}
         </select>
       </Field>
-      <Field label="Descrição">
+      <Field
+        error={form.formState.errors.description?.message}
+        id="resource-description"
+        label="Descrição"
+      >
         <textarea {...form.register("description")} />
       </Field>
       {category === "MATERIAL" ? (
-        <Field label="URL">
+        <Field
+          error={form.formState.errors.url?.message}
+          id="resource-url"
+          label="URL"
+        >
           <input type="url" {...form.register("url")} />
         </Field>
       ) : null}
       {["QUESTION", "PROBLEM", "PROJECT"].includes(format) ? (
-        <Field label="Enunciado">
+        <Field
+          error={form.formState.errors.prompt?.message}
+          id="resource-prompt"
+          label="Enunciado"
+        >
           <textarea {...form.register("prompt")} />
         </Field>
       ) : null}
       {format === "PROJECT" ? (
         <div className="space-y-2">
           {requirements.fields.map((field, index) => (
-            <Field key={field.id} label={`Requisito ${index + 1}`}>
+            <Field
+              error={form.formState.errors.requirements?.[index]?.text?.message}
+              id={`requirement-${index}`}
+              key={field.id}
+              label={`Requisito ${index + 1}`}
+            >
               <input {...form.register(`requirements.${index}.text`)} />
             </Field>
           ))}
@@ -141,10 +175,18 @@ export function ResourceForm({
       ) : null}
       {format === "FLASHCARD" ? (
         <>
-          <Field label="Frente">
+          <Field
+            error={form.formState.errors.flashcardFront?.message}
+            id="resource-front"
+            label="Frente"
+          >
             <textarea {...form.register("flashcardFront")} />
           </Field>
-          <Field label="Verso">
+          <Field
+            error={form.formState.errors.flashcardBack?.message}
+            id="resource-back"
+            label="Verso"
+          >
             <textarea {...form.register("flashcardBack")} />
           </Field>
         </>
@@ -155,15 +197,40 @@ export function ResourceForm({
 }
 function Field({
   children,
+  error,
+  id,
   label,
 }: {
   children: React.ReactNode;
+  error?: string | undefined;
+  id: string;
   label: string;
 }) {
+  const errorId = `${id}-error`;
   return (
-    <label className="block space-y-2 text-sm font-medium">
-      <span>{label}</span>
-      {children}
-    </label>
+    <div className="space-y-2">
+      <label className="block text-sm font-medium" htmlFor={id}>
+        {label}
+      </label>
+      {isValidElement(children)
+        ? cloneElement(
+            children as ReactElement<{
+              id?: string;
+              "aria-invalid"?: boolean;
+              "aria-describedby"?: string;
+            }>,
+            {
+              id,
+              "aria-invalid": Boolean(error),
+              ...(error ? { "aria-describedby": errorId } : {}),
+            },
+          )
+        : children}
+      {error ? (
+        <p className="text-sm text-destructive" id={errorId} role="alert">
+          {error}
+        </p>
+      ) : null}
+    </div>
   );
 }

@@ -6,6 +6,11 @@ const options = [
   ["IN_PROGRESS", "Em andamento"],
   ["COMPLETED", "Concluído"],
 ] as const;
+const transitions = {
+  NOT_STARTED: ["NOT_STARTED", "IN_PROGRESS"],
+  IN_PROGRESS: ["IN_PROGRESS", "COMPLETED"],
+  COMPLETED: ["COMPLETED"],
+} as const;
 export function ResourceStatus({
   resourceId,
   trailId = "",
@@ -22,27 +27,31 @@ export function ResourceStatus({
     <fieldset>
       <legend className="text-sm font-medium">Status</legend>
       <div className="mt-2 flex flex-wrap gap-3">
-        {options.map(([value, label]) => (
-          <label key={value} className="flex items-center gap-1 text-sm">
-            <input
-              type="radio"
-              name={`status-${resourceId}`}
-              checked={current === value}
-              onChange={() => {
-                const previous = current;
-                setCurrent(value);
-                setError(false);
-                mutation.mutate(value, {
-                  onError: () => {
-                    setCurrent(previous);
-                    setError(true);
-                  },
-                });
-              }}
-            />
-            {label}
-          </label>
-        ))}
+        {options
+          .filter(([value]) =>
+            (transitions[current] as readonly string[]).includes(value),
+          )
+          .map(([value, label]) => (
+            <label key={value} className="flex items-center gap-1 text-sm">
+              <input
+                type="radio"
+                name={`status-${resourceId}`}
+                checked={current === value}
+                onChange={() => {
+                  const previous = current;
+                  setCurrent(value);
+                  setError(false);
+                  mutation.mutate(value, {
+                    onError: () => {
+                      setCurrent(previous);
+                      setError(true);
+                    },
+                  });
+                }}
+              />
+              {label}
+            </label>
+          ))}
       </div>
       {error ? (
         <p role="alert" className="mt-2 text-sm text-destructive">
