@@ -28,10 +28,10 @@ export default defineConfig({
   webServer: [
     {
       command:
-        "pnpm --dir ../.. --filter @my-learning/database build && node e2e/prepare-database.mjs && pnpm --dir ../.. --filter @my-learning/api dev",
+        "pnpm --dir ../.. --filter @my-learning/domain build && pnpm --dir ../.. --filter @my-learning/contracts build && pnpm --dir ../.. --filter @my-learning/database build && node e2e/prepare-database.mjs && pnpm --dir ../.. --filter @my-learning/api dev",
       url: "http://127.0.0.1:3001/api/v1/health",
       reuseExistingServer: false,
-      timeout: 120_000,
+      timeout: 180_000,
       env: {
         API_HOST: "127.0.0.1",
         API_PORT: "3001",
