@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const uuidV4Schema = z.uuid().refine((value) => value[14] === "4");
+export const isoInstantSchema = z.iso
+  .datetime({ offset: true })
+  .refine((value) => value.endsWith("Z"));
+export const localDateSchema = z.iso.date();
+
 export const resourceCategorySchema = z.enum(["MATERIAL", "PRACTICE"]);
 
 export const resourceStatusSchema = z.enum([

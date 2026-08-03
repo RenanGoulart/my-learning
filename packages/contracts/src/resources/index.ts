@@ -1,14 +1,12 @@
 import { z } from "zod";
 import {
+  isoInstantSchema,
   resourceCategorySchema,
   resourceFormatSchema,
   resourceStatusSchema,
+  uuidV4Schema,
 } from "../common/index.js";
 
-const uuidV4Schema = z.uuid().refine((value) => value[14] === "4");
-const isoInstantSchema = z.iso
-  .datetime({ offset: true })
-  .refine((value) => value.endsWith("Z"));
 const requiredTrimmedTextSchema = z
   .string()
   .transform((value) => value.trim())
