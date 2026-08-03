@@ -29,6 +29,7 @@ export function ResourceDetail({ resourceId }: { resourceId: string }) {
         </div>
         <div className="flex gap-2">
           <Button
+            nativeButton={false}
             render={<Link href={`/recursos/${item.id}/editar`} />}
             variant="outline"
           >

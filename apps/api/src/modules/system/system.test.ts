@@ -14,6 +14,24 @@ async function buildTestApp() {
 }
 
 describe("system routes", () => {
+  it("allows PUT requests from the local web application", async () => {
+    const app = await buildTestApp();
+    const response = await app.inject({
+      method: "OPTIONS",
+      url: "/api/v1/trails/00000000-0000-4000-8000-000000000001/resources/order",
+      headers: {
+        origin: "http://127.0.0.1:3000",
+        "access-control-request-method": "PUT",
+      },
+    });
+
+    expect(response.statusCode).toBe(204);
+    expect(
+      response.headers["access-control-allow-methods"]?.split(", "),
+    ).toContain("PUT");
+    await app.close();
+  });
+
   it("returns health only after a SQLite probe", async () => {
     const app = await buildTestApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/health" });

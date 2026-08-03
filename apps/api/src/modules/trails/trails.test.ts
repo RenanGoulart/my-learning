@@ -35,13 +35,15 @@ describe("trail routes", () => {
 
     expect(first.statusCode).toBe(201);
     expect(second.statusCode).toBe(201);
-    expect(first.json()).toMatchObject({
+    const createdTrail = trailDetailSchema.parse(first.json());
+    expect(createdTrail).toMatchObject({
       title: "Web",
       progress: { completedResources: 0, totalResources: 0, percentage: 0 },
       isComplete: false,
       isActive: false,
       createdAt: "2026-08-01T12:00:00.000Z",
     });
+    expect(createdTrail.resources).toEqual([]);
     await app.close();
     database.remove();
   });

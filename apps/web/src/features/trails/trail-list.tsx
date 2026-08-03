@@ -62,5 +62,9 @@ export function TrailList() {
 }
 
 export function NewTrailButton() {
-  return <Button render={<Link href="/trilhas/nova" />}>Nova trilha</Button>;
+  return (
+    <Button nativeButton={false} render={<Link href="/trilhas/nova" />}>
+      Nova trilha
+    </Button>
+  );
 }

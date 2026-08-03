@@ -1,7 +1,12 @@
+import { existsSync } from "node:fs";
+
 const { buildApp } = await import("./app.js");
 const { parseProcessConfig, resolveRootEnvPath } = await import("./config.js");
 
-process.loadEnvFile(resolveRootEnvPath(import.meta.dirname));
+const envPath = resolveRootEnvPath(import.meta.dirname);
+if (existsSync(envPath)) {
+  process.loadEnvFile(envPath);
+}
 
 const config = parseProcessConfig();
 const app = await buildApp();

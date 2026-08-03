@@ -32,12 +32,16 @@ export function TrailDetail({ trailId }: { trailId: string }) {
         </div>
         <div className="flex gap-2">
           <Button
+            nativeButton={false}
             render={<Link href={`/trilhas/${trailId}/editar`} />}
             variant="outline"
           >
             Editar
           </Button>
-          <Button render={<Link href={`/trilhas/${trailId}/recursos/novo`} />}>
+          <Button
+            nativeButton={false}
+            render={<Link href={`/trilhas/${trailId}/recursos/novo`} />}
+          >
             Novo recurso
           </Button>
           <DeleteTrailButton trailId={trailId} />

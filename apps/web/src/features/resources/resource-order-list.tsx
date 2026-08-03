@@ -1,10 +1,22 @@
 "use client";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
 import {
   SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { CSS } from "@dnd-kit/utilities";
+import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -22,14 +34,29 @@ export function ResourceOrderList({
   resources: Item[];
 }) {
   const mutation = useResourceOrder(trailId);
+  const [error, setError] = useState(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
   const move = (index: number, direction: -1 | 1) => {
+    if (mutation.isPending) return;
     const next = [...resources];
     const target = index + direction;
     if (!next[index] || !next[target]) return;
     [next[index], next[target]] = [next[target], next[index]];
-    mutation.mutate(next.map((resource) => resource.id));
+    setError(false);
+    mutation.mutate(
+      next.map((resource) => resource.id),
+      {
+        onError: () => setError(true),
+      },
+    );
   };
   const onDragEnd = (event: DragEndEvent) => {
+    if (mutation.isPending) return;
     if (!event.over || event.active.id === event.over.id) return;
     const ids = resources.map((resource) => resource.id);
     const from = ids.indexOf(String(event.active.id));
@@ -38,44 +65,101 @@ export function ResourceOrderList({
     const [moved] = ids.splice(from, 1);
     if (!moved) return;
     ids.splice(to, 0, moved);
-    mutation.mutate(ids);
+    setError(false);
+    mutation.mutate(ids, { onError: () => setError(true) });
   };
   return (
     <TooltipProvider>
-      <DndContext onDragEnd={onDragEnd}>
+      <DndContext onDragEnd={onDragEnd} sensors={sensors}>
         <SortableContext
           items={resources.map((resource) => resource.id)}
           strategy={verticalListSortingStrategy}
         >
           <ol className="divide-y divide-border border-y border-border">
             {resources.map((resource, index) => (
-              <li
-                className="flex min-h-12 items-center justify-between gap-3 py-2"
+              <SortableResource
                 key={resource.id}
-              >
-                <span>{resource.title}</span>
-                <span className="flex gap-1">
-                  <MoveButton
-                    disabled={index === 0}
-                    label={`Mover ${resource.title} para cima`}
-                    onClick={() => move(index, -1)}
-                  >
-                    <ArrowUp />
-                  </MoveButton>
-                  <MoveButton
-                    disabled={index === resources.length - 1}
-                    label={`Mover ${resource.title} para baixo`}
-                    onClick={() => move(index, 1)}
-                  >
-                    <ArrowDown />
-                  </MoveButton>
-                </span>
-              </li>
+                onMove={move}
+                resource={resource}
+                index={index}
+                isFirst={index === 0}
+                isLast={index === resources.length - 1}
+                disabled={mutation.isPending}
+              />
             ))}
           </ol>
         </SortableContext>
       </DndContext>
+      {error ? (
+        <p className="mt-2 text-sm text-destructive" role="alert">
+          Não foi possível alterar a ordem dos recursos.
+        </p>
+      ) : null}
     </TooltipProvider>
+  );
+}
+function SortableResource({
+  disabled,
+  index,
+  isFirst,
+  isLast,
+  onMove,
+  resource,
+}: {
+  disabled: boolean;
+  index: number;
+  isFirst: boolean;
+  isLast: boolean;
+  onMove: (index: number, direction: -1 | 1) => void;
+  resource: Item;
+}) {
+  const sortable = useSortable({ id: resource.id, disabled });
+  return (
+    <li
+      className="flex min-h-12 items-center justify-between gap-3 py-2"
+      ref={sortable.setNodeRef}
+      style={{
+        opacity: sortable.isDragging ? 0.5 : undefined,
+        transform: CSS.Transform.toString(sortable.transform),
+        transition: sortable.transition,
+      }}
+    >
+      <span className="flex min-w-0 items-center gap-2">
+        <Button
+          aria-label={`Arrastar ${resource.title}`}
+          disabled={disabled}
+          size="icon-xs"
+          type="button"
+          variant="ghost"
+          {...sortable.attributes}
+          {...sortable.listeners}
+        >
+          <GripVertical />
+        </Button>
+        <Link
+          className="truncate underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          href={`/recursos/${resource.id}`}
+        >
+          {resource.title}
+        </Link>
+      </span>
+      <span className="flex gap-1">
+        <MoveButton
+          disabled={disabled || isFirst}
+          label={`Mover ${resource.title} para cima`}
+          onClick={() => onMove(index, -1)}
+        >
+          <ArrowUp />
+        </MoveButton>
+        <MoveButton
+          disabled={disabled || isLast}
+          label={`Mover ${resource.title} para baixo`}
+          onClick={() => onMove(index, 1)}
+        >
+          <ArrowDown />
+        </MoveButton>
+      </span>
+    </li>
   );
 }
 function MoveButton({

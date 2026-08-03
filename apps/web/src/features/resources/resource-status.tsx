@@ -34,6 +34,7 @@ export function ResourceStatus({
           .map(([value, label]) => (
             <label key={value} className="flex items-center gap-1 text-sm">
               <input
+                disabled={mutation.isPending}
                 type="radio"
                 name={`status-${resourceId}`}
                 checked={current === value}

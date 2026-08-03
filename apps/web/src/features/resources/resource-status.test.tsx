@@ -30,4 +30,27 @@ describe("ResourceStatus", () => {
       "Não foi possível alterar o status.",
     );
   });
+
+  it("prevents another transition while an update is pending", async () => {
+    updateResourceStatus.mockImplementationOnce(
+      () => new Promise(() => undefined),
+    );
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceStatus
+          resourceId="00000000-0000-4000-8000-000000000001"
+          status="NOT_STARTED"
+        />
+      </QueryClientProvider>,
+    );
+
+    await user.click(screen.getByRole("radio", { name: "Em andamento" }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("radio", { name: "Em andamento" }),
+      ).toBeDisabled(),
+    );
+  });
 });

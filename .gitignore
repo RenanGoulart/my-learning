@@ -1,9 +1,10 @@
 .env
 .env.*
 !.env.example
-data/*.db
-data/*.db-*
+**/data/*.db
+**/data/*.db-*
 !data/.gitkeep
+apps/web/next-env.d.ts
 packages/database/src/generated
 node_modules
 dist

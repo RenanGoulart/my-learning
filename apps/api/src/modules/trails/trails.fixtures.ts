@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 import type { FastifyInstance } from "fastify";
-import { trailSummarySchema } from "@my-learning/contracts";
+import { trailDetailSchema, trailSummarySchema } from "@my-learning/contracts";
 
 export const fixedClock = {
   now: () => new Date("2026-08-01T12:00:00.000Z"),
@@ -35,5 +35,16 @@ export async function buildTrail(app: FastifyInstance, title = "Web") {
     payload: { title },
   });
 
-  return trailSummarySchema.parse(response.json());
+  const detail = trailDetailSchema.parse(response.json());
+  return trailSummarySchema.parse({
+    id: detail.id,
+    title: detail.title,
+    description: detail.description,
+    goal: detail.goal,
+    progress: detail.progress,
+    isComplete: detail.isComplete,
+    isActive: detail.isActive,
+    createdAt: detail.createdAt,
+    updatedAt: detail.updatedAt,
+  });
 }
