@@ -32,8 +32,10 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
-pnpm test:e2e -- --project=chromium
+pnpm test:e2e
 ```
+
+Antes de executar o E2E, libere as portas usadas pelo ambiente de teste (`3000` para Web e `3001` para API) e confirme que nao ha processos escutando nelas. Isso evita que o Playwright reutilize servidores ou bancos de uma execucao anterior.
 
 O teste E2E abre o Dashboard em `1366x768` e `390x844`, validando a navegacao e a ausencia de rolagem horizontal da pagina.
 

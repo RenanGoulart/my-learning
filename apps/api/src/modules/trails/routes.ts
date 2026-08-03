@@ -38,7 +38,7 @@ export const trailRoutes: FastifyPluginCallback<TrailRoutesOptions> = (
     {
       schema: {
         body: createTrailInputSchema,
-        response: { 201: trailSummarySchema },
+        response: { 201: trailDetailSchema },
       },
     },
     (request, reply) =>

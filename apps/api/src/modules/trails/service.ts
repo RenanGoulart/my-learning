@@ -83,12 +83,16 @@ export function createTrailService(deps: {
         now,
       });
       return {
-        ...trail,
+        id: trail.id,
+        title: trail.title,
+        description: trail.description,
+        goal: trail.goal,
         progress: { completedResources: 0, totalResources: 0, percentage: 0 },
         isComplete: false,
         isActive: false,
         createdAt: trail.createdAt.toISOString(),
         updatedAt: trail.updatedAt.toISOString(),
+        resources: [],
       };
     },
     async update(id: string, input: PatchTrailInput) {
