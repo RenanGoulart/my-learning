@@ -6,6 +6,7 @@ import { DeleteResourceButton } from "./delete-resource-button";
 import { ResourceConversion } from "./resource-conversion";
 import { useResource } from "./queries";
 import { ResourceStatus } from "./resource-status";
+import { PracticeAnswer } from "@/features/practices/practice-answer";
 export function ResourceDetail({ resourceId }: { resourceId: string }) {
   const resource = useResource(resourceId);
   if (resource.isPending) return <p>Carregando recurso...</p>;
@@ -61,6 +62,9 @@ export function ResourceDetail({ resourceId }: { resourceId: string }) {
           <h2 className="text-lg font-medium">Enunciado</h2>
           <p className="whitespace-pre-wrap">{item.prompt}</p>
         </section>
+      ) : null}
+      {item.format === "QUESTION" || item.format === "PROBLEM" ? (
+        <PracticeAnswer resource={item} />
       ) : null}
       {item.format === "PROJECT" ? (
         <section>
