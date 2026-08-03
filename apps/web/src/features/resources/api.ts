@@ -32,6 +32,11 @@ export const updateResourceStatus = (
     method: "PATCH",
     body: JSON.stringify({ status }),
   });
+export const savePracticeAnswer = (id: string, answer: string | null) =>
+  apiRequest(`/api/v1/practices/${id}/answer`, resourceDetailSchema, {
+    method: "PUT",
+    body: JSON.stringify({ answer }),
+  });
 export const reorderResources = (trailId: string, resourceIds: string[]) =>
   apiRequest(
     `/api/v1/trails/${trailId}/resources/order`,
