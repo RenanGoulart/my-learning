@@ -8,6 +8,7 @@ import Fastify, { type FastifyServerOptions } from "fastify";
 import { parseProcessConfig } from "./config.js";
 import { systemRoutes } from "./modules/system/routes.js";
 import { checkInRoutes } from "./modules/check-ins/routes.js";
+import { dashboardRoutes } from "./modules/dashboard/routes.js";
 import { resourceRoutes } from "./modules/resources/routes.js";
 import { trailRoutes } from "./modules/trails/routes.js";
 import { corsPlugin } from "./plugins/cors.js";
@@ -42,6 +43,10 @@ export async function buildApp(options: BuildAppOptions = {}) {
     prefix: "/api/v1",
   });
   await app.register(checkInRoutes, {
+    clock: options.clock ?? systemClock,
+    prefix: "/api/v1",
+  });
+  await app.register(dashboardRoutes, {
     clock: options.clock ?? systemClock,
     prefix: "/api/v1",
   });
