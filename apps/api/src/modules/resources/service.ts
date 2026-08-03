@@ -20,7 +20,7 @@ function notFound() {
   });
 }
 
-function toDetail(resource: ResourceWithDetails) {
+export function toResourceDetail(resource: ResourceWithDetails) {
   return {
     id: resource.id,
     trailId: resource.trailId,
@@ -130,7 +130,7 @@ export function createResourceService(deps: {
     if (!resource) {
       throw notFound();
     }
-    return toDetail(resource);
+    return toResourceDetail(resource);
   }
 
   return {
@@ -205,7 +205,7 @@ export function createResourceService(deps: {
           statusCode: 409,
         });
       }
-      return toDetail(resource.resource);
+      return toResourceDetail(resource.resource);
     },
     async create(trailId: string, input: CreateResourceInput) {
       const now = deps.clock.now();
@@ -239,7 +239,7 @@ export function createResourceService(deps: {
           statusCode: 404,
         });
       }
-      return toDetail(resource);
+      return toResourceDetail(resource);
     },
     get,
     async update(id: string, input: PatchResourceInput) {
@@ -275,7 +275,7 @@ export function createResourceService(deps: {
       if (!resource) {
         throw notFound();
       }
-      return toDetail(resource);
+      return toResourceDetail(resource);
     },
     async updateStatus(id: string, status: ResourceStatus) {
       const expectedStatus =
@@ -307,7 +307,7 @@ export function createResourceService(deps: {
           statusCode: 422,
         });
       }
-      return toDetail(resource.resource);
+      return toResourceDetail(resource.resource);
     },
     async reorder(trailId: string, resourceIds: string[]) {
       if (!(await deps.repository.findTrail(trailId))) {
