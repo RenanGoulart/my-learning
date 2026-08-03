@@ -1,0 +1,22 @@
+import { render, screen } from "@testing-library/react";
+import { expect, it } from "vitest";
+import { CheckInHistory } from "./check-in-history";
+
+it("formats history dates and durations", () => {
+  render(
+    <CheckInHistory
+      checkIns={[
+        {
+          id: "550e8400-e29b-41d4-a716-446655440000",
+          localDate: "2026-08-01",
+          note: "Notas",
+          durationMinutes: 90,
+          createdAt: "2026-08-01T12:00:00.000Z",
+          updatedAt: "2026-08-01T12:00:00.000Z",
+        },
+      ]}
+    />,
+  );
+  expect(screen.getByText("01/08/2026")).toBeVisible();
+  expect(screen.getByText("1h 30min")).toBeVisible();
+});
