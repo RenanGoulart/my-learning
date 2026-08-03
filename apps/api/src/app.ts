@@ -7,6 +7,7 @@ import Fastify, { type FastifyServerOptions } from "fastify";
 
 import { parseProcessConfig } from "./config.js";
 import { systemRoutes } from "./modules/system/routes.js";
+import { checkInRoutes } from "./modules/check-ins/routes.js";
 import { resourceRoutes } from "./modules/resources/routes.js";
 import { trailRoutes } from "./modules/trails/routes.js";
 import { corsPlugin } from "./plugins/cors.js";
@@ -37,6 +38,10 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await app.register(prismaPlugin, { databasePath });
   await app.register(errorHandlerPlugin);
   await app.register(systemRoutes, {
+    clock: options.clock ?? systemClock,
+    prefix: "/api/v1",
+  });
+  await app.register(checkInRoutes, {
     clock: options.clock ?? systemClock,
     prefix: "/api/v1",
   });
