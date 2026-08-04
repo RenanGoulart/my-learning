@@ -23,6 +23,8 @@ export type BuildAppOptions = {
   logger?: FastifyServerOptions["logger"];
 };
 
+const prefix = "/api/v1";
+
 export async function buildApp(options: BuildAppOptions = {}) {
   const config = options.databasePath ? undefined : parseProcessConfig();
   const databasePath = options.databasePath ?? config?.databasePath;
@@ -41,27 +43,27 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await app.register(errorHandlerPlugin);
   await app.register(systemRoutes, {
     clock: options.clock ?? systemClock,
-    prefix: "/api/v1",
+    prefix,
   });
   await app.register(checkInRoutes, {
     clock: options.clock ?? systemClock,
-    prefix: "/api/v1",
+    prefix,
   });
   await app.register(dashboardRoutes, {
     clock: options.clock ?? systemClock,
-    prefix: "/api/v1",
+    prefix,
   });
   await app.register(trailRoutes, {
     clock: options.clock ?? systemClock,
-    prefix: "/api/v1",
+    prefix,
   });
   await app.register(resourceRoutes, {
     clock: options.clock ?? systemClock,
-    prefix: "/api/v1",
+    prefix,
   });
   await app.register(practiceRoutes, {
     clock: options.clock ?? systemClock,
-    prefix: "/api/v1",
+    prefix,
   });
 
   return app;
