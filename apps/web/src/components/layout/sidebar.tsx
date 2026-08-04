@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "./theme-toggle";
 
 const destinations = [
   { href: "/", label: "Dashboard" },
@@ -27,7 +28,10 @@ export function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
 export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 hidden w-60 border-r border-border bg-card p-4 lg:block">
-      <p className="mb-6 text-sm font-semibold">My Learning</p>
+      <div className="mb-6 flex items-center justify-between">
+        <p className="text-sm font-semibold">My Learning</p>
+        <ThemeToggle />
+      </div>
       <NavigationLinks />
     </aside>
   );
