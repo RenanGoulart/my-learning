@@ -12,8 +12,8 @@
         "@my-learning/api",
         "exec",
         "tsx",
-        "--inspect",
         "watch",
+        "--inspect",
         "src/server.ts"
       ],
       "envFile": "${workspaceFolder}/.env",
