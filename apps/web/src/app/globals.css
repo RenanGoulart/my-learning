@@ -121,10 +121,22 @@ body {
     @apply border-border outline-ring/50;
   }
   input:not([type="hidden"]),
-  textarea,
   select {
     border-radius: 4px;
     border: 2px solid var(--input);
+    width: min(100%, 14rem);
+  }
+  textarea {
+    border: 2px solid var(--input);
+    width: min(100%, 42rem);
+  }
+  select,
+  select option {
+    background-color: var(--card);
+    color: var(--foreground);
+  }
+  .dark select {
+    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground;

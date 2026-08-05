@@ -23,8 +23,20 @@ import { resourceKeys } from "./queries";
 const formSchema = createResourceInputSchema;
 type Values = z.input<typeof formSchema>;
 const formats = {
-  MATERIAL: ["COURSE", "DOCUMENTATION", "ARTICLE", "VIDEO", "BOOK", "OTHER"],
-  PRACTICE: ["QUESTION", "PROBLEM", "PROJECT", "FLASHCARD"],
+  MATERIAL: [
+    { value: "COURSE", label: "Curso" },
+    { value: "DOCUMENTATION", label: "Documentação" },
+    { value: "ARTICLE", label: "Artigo" },
+    { value: "VIDEO", label: "Vídeo" },
+    { value: "BOOK", label: "Livro" },
+    { value: "OTHER", label: "Outro" },
+  ],
+  PRACTICE: [
+    { value: "QUESTION", label: "Questão" },
+    { value: "PROBLEM", label: "Problema" },
+    { value: "PROJECT", label: "Projeto" },
+    { value: "FLASHCARD", label: "Flashcard" },
+  ],
 } as const;
 export function ResourceForm({
   mode,
@@ -176,8 +188,8 @@ export function ResourceForm({
           <select {...form.register("format")} disabled={!category}>
             <option value="">Selecione um formato</option>
             {(category ? formats[category] : []).map((item) => (
-              <option key={item} value={item}>
-                {item}
+              <option key={item.value} value={item.value}>
+                {item.label}
               </option>
             ))}
           </select>
