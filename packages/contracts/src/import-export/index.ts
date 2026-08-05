@@ -138,7 +138,7 @@ function ensureContiguous(records: Array<{ position: number }>, label: string) {
   if (positions.some((position, index) => position !== index + 1)) {
     throw new SnapshotValidationError(
       "SNAPSHOT_ORDER_INVALID",
-      `A ordem de ${label} deve ser contÃ­gua e iniciar em 1.`,
+      `A ordem de ${label} deve ser contígua e iniciar em 1.`,
     );
   }
 }
@@ -148,7 +148,7 @@ export function validateSnapshot(input: unknown): ExportSnapshot {
   if (!parsed.success) {
     throw new SnapshotValidationError(
       "SNAPSHOT_INVALID",
-      "O snapshot possui estrutura invÃ¡lida.",
+      "O snapshot possui estrutura inválida.",
     );
   }
 
@@ -156,7 +156,7 @@ export function validateSnapshot(input: unknown): ExportSnapshot {
   if (snapshot.formatVersion !== "1.0.0") {
     throw new SnapshotValidationError(
       "SNAPSHOT_VERSION_UNSUPPORTED",
-      "A versÃ£o do snapshot nÃ£o Ã© suportada.",
+      "A versão do snapshot não é suportada.",
     );
   }
   if (snapshot.timeZone !== "America/Sao_Paulo") {
@@ -220,7 +220,7 @@ export function validateSnapshot(input: unknown): ExportSnapshot {
     if ((resource.category === "MATERIAL") !== isMaterial) {
       throw new SnapshotValidationError(
         "SNAPSHOT_RESOURCE_INVALID",
-        "A categoria e o formato do recurso sÃ£o incompatÃ­veis.",
+        "A categoria e o formato do recurso são incompatíveis.",
       );
     }
     if (
@@ -229,19 +229,19 @@ export function validateSnapshot(input: unknown): ExportSnapshot {
     ) {
       throw new SnapshotValidationError(
         "SNAPSHOT_RESOURCE_INVALID",
-        "Um material possui dados de prÃ¡tica.",
+        "Um material possui dados de prática.",
       );
     }
     if (!isMaterial && resource.url !== null) {
       throw new SnapshotValidationError(
         "SNAPSHOT_RESOURCE_INVALID",
-        "Uma prÃ¡tica nÃ£o pode possuir URL.",
+        "Uma prática não pode possuir URL.",
       );
     }
     if (promptFormats.has(resource.format) && resource.prompt === null) {
       throw new SnapshotValidationError(
         "SNAPSHOT_RESOURCE_INVALID",
-        "A prÃ¡tica exige enunciado.",
+        "A prática exige enunciado.",
       );
     }
     if (
@@ -295,7 +295,7 @@ export function validateSnapshot(input: unknown): ExportSnapshot {
     ) {
       throw new SnapshotValidationError(
         "SNAPSHOT_RELATION_INVALID",
-        "Uma resposta referencia uma prÃ¡tica incompatÃ­vel.",
+        "Uma resposta referencia uma prática incompatível.",
       );
     }
     answeredResources.add(resource.id);

@@ -23,7 +23,7 @@ describe("snapshot import client", () => {
       new ApiClientError(413, {
         error: {
           code: "IMPORT_FILE_TOO_LARGE",
-          message: "O arquivo deve ter no mÃ¡ximo 10 MiB.",
+          message: "O arquivo deve ter no máximo 10 MiB.",
         },
       }),
     );

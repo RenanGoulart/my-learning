@@ -158,7 +158,7 @@ export function createResourceService(deps: {
       ) {
         throw new AppError({
           code: "RESOURCE_CHANGED",
-          message: "O recurso foi alterado. Revise a conversÃ£o novamente.",
+          message: "O recurso foi alterado. Revise a conversão novamente.",
           statusCode: 409,
         });
       }
@@ -168,7 +168,7 @@ export function createResourceService(deps: {
       ) {
         throw new AppError({
           code: "DISCARD_CONFIRMATION_REQUIRED",
-          message: "Confirme o descarte dos dados incompatÃ­veis.",
+          message: "Confirme o descarte dos dados incompatíveis.",
           statusCode: 409,
         });
       }
@@ -201,7 +201,7 @@ export function createResourceService(deps: {
       if (resource.kind === "changed") {
         throw new AppError({
           code: "RESOURCE_CHANGED",
-          message: "O recurso foi alterado. Revise a conversÃ£o novamente.",
+          message: "O recurso foi alterado. Revise a conversão novamente.",
           statusCode: 409,
         });
       }

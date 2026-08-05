@@ -100,9 +100,9 @@ export function SettingsView() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">ConfiguraÃ§Ãµes</h1>
+        <h1 className="text-2xl font-semibold">Configurações</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Dados e backup da instalaÃ§Ã£o local.
+          Dados e backup da instalação local.
         </p>
       </div>
       {error ? (

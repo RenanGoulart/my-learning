@@ -48,7 +48,7 @@ const conversionTargetSchema = z
       context.addIssue({
         code: "custom",
         path: ["targetFormat"],
-        message: "Formato incompatÃ­vel com a categoria.",
+        message: "Formato incompatível com a categoria.",
       });
     }
   });

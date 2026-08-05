@@ -23,7 +23,7 @@ export function createSnapshotService(deps: {
     } catch {
       throw new AppError({
         code: "IMPORT_JSON_INVALID",
-        message: "O arquivo nÃ£o contÃ©m JSON UTF-8 vÃ¡lido.",
+        message: "O arquivo não contém JSON UTF-8 válido.",
         statusCode: 422,
       });
     }
