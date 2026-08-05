@@ -1,0 +1,53 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@/features/import-export/api", () => ({
+  confirmImport: vi.fn(),
+  previewImport: vi.fn().mockResolvedValue({
+    formatVersion: "1.0.0",
+    counts: {
+      trails: 2,
+      resources: 1,
+      practiceAnswers: 0,
+      projectRequirements: 0,
+      studyCheckIns: 0,
+    },
+  }),
+}));
+vi.mock("./api", () => ({
+  getSystemInfo: vi.fn().mockResolvedValue({
+    databasePath: "C:/data/my-learning.db",
+    snapshotFormatVersion: "1.0.0",
+    timeZone: "America/Sao_Paulo",
+  }),
+}));
+
+import { SettingsView } from "./settings-view.js";
+
+describe("SettingsView", () => {
+  it("shows the preview and replacement warning before confirmation", async () => {
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <SettingsView />
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("C:/data/my-learning.db");
+    await user.upload(
+      screen.getByLabelText("Arquivo JSON"),
+      new File(["{}"], "backup.json", { type: "application/json" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Validar arquivo" }));
+
+    expect(await screen.findByText("2 trilhas")).toBeVisible();
+    expect(
+      screen.getByText(/todos os dados atuais serÃ£o substituÃ­dos/i),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Importar e substituir" }),
+    ).toBeVisible();
+  });
+});

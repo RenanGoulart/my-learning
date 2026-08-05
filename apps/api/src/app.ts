@@ -3,12 +3,14 @@ import {
   serializerCompiler,
   type ZodTypeProvider,
 } from "@fastify/type-provider-zod";
+import multipart from "@fastify/multipart";
 import Fastify, { type FastifyServerOptions } from "fastify";
 
 import { parseProcessConfig } from "./config.js";
 import { systemRoutes } from "./modules/system/routes.js";
 import { checkInRoutes } from "./modules/check-ins/routes.js";
 import { dashboardRoutes } from "./modules/dashboard/routes.js";
+import { snapshotRoutes } from "./modules/import-export/routes.js";
 import { practiceRoutes } from "./modules/practices/routes.js";
 import { resourceRoutes } from "./modules/resources/routes.js";
 import { trailRoutes } from "./modules/trails/routes.js";
@@ -38,6 +40,9 @@ export async function buildApp(options: BuildAppOptions = {}) {
 
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
+  await app.register(multipart, {
+    limits: { files: 1, fileSize: 10 * 1024 * 1024, fields: 0 },
+  });
   await app.register(corsPlugin);
   await app.register(prismaPlugin, { databasePath });
   await app.register(errorHandlerPlugin);
@@ -64,6 +69,10 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await app.register(practiceRoutes, {
     clock: options.clock ?? systemClock,
     prefix,
+  });
+  await app.register(snapshotRoutes, {
+    clock: options.clock ?? systemClock,
+    prefix: "/api/v1",
   });
 
   return app;

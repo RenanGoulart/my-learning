@@ -8,6 +8,7 @@ MVP local para organizar estudos em um unico lugar. A plataforma permite criar t
 - Materiais como cursos, documentacoes, artigos, videos e livros.
 - Praticas manuais: questoes, problemas, projetos com requisitos e flashcards.
 - Check-in diario, streak e Dashboard com resumo do estudo.
+- Backup e restauracao manual por snapshot JSON versionado.
 
 ## Estrutura
 
@@ -21,7 +22,7 @@ O repositorio usa pnpm workspaces e Turborepo:
 
 ## Requisitos
 
-- Node.js 24 (>=24 e <25)
+- Node.js 24 (>=24.15 e <25)
 - Corepack habilitado
 - pnpm 11.18.0
 
@@ -47,6 +48,12 @@ pnpm --filter @my-learning/api dev
 ```
 
 O Dashboard e a primeira tela da aplicacao. O arquivo `.env` nao deve ser versionado; use `.env.example` como referencia.
+
+## Backup local
+
+Em `Configuracoes`, a aplicacao mostra o caminho efetivo do banco SQLite, o fuso `America/Sao_Paulo` e a versao do formato de backup. Use `Exportar JSON` para baixar um snapshot completo em UTF-8 e com indentacao de dois espacos.
+
+Para restaurar, selecione o arquivo em `Configuracoes`, valide o resumo e confirme a substituicao. A importacao preserva IDs, relacionamentos, ordens, timestamps e check-ins, mas substitui integralmente os dados locais atuais; nao ha mesclagem.
 
 ## Qualidade
 
