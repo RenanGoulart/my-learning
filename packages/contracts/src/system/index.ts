@@ -12,3 +12,11 @@ export const healthResponseSchema = z.strictObject({
     .datetime({ offset: true })
     .refine((value) => value.endsWith("Z")),
 });
+
+export const systemInfoSchema = z.strictObject({
+  databasePath: z.string(),
+  snapshotFormatVersion: z.literal("1.0.0"),
+  timeZone: z.literal("America/Sao_Paulo"),
+});
+
+export type SystemInfo = z.infer<typeof systemInfoSchema>;

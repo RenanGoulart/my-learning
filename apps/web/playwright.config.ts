@@ -3,6 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: false,
+  workers: 1,
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:3000",
@@ -28,7 +29,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        "pnpm --dir ../.. --filter @my-learning/domain build && pnpm --dir ../.. --filter @my-learning/contracts build && pnpm --dir ../.. --filter @my-learning/database build && node e2e/prepare-database.mjs && pnpm --dir ../.. --filter @my-learning/api dev",
+        "pnpm --dir ../.. --filter @my-learning/domain build && pnpm --dir ../.. --filter @my-learning/contracts build && pnpm --dir ../.. --filter @my-learning/database build && node e2e/prepare-database.mjs && pnpm --dir ../.. --filter @my-learning/api exec tsx src/server.ts",
       url: "http://127.0.0.1:3001/api/v1/health",
       reuseExistingServer: false,
       timeout: 180_000,
