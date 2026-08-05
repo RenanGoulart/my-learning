@@ -1,17 +1,10 @@
-import { healthResponseSchema } from "@my-learning/contracts";
+import { healthResponseSchema, systemInfoSchema } from "@my-learning/contracts";
 import type { FastifyPluginCallback } from "fastify";
-import { z } from "zod";
 
 import { systemClock } from "../../shared/clock.js";
 import { createSystemController } from "./controller.js";
 import { createSystemRepository } from "./repository.js";
 import { createSystemService } from "./service.js";
-
-const systemInfoSchema = z.strictObject({
-  databasePath: z.string(),
-  snapshotFormatVersion: z.literal("1.0.0"),
-  timeZone: z.literal("America/Sao_Paulo"),
-});
 
 type SystemRoutesOptions = {
   clock?: typeof systemClock;
