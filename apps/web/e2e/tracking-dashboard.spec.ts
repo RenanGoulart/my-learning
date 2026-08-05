@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { expectNoAccessibilityViolations } from "./accessibility";
+
 test.describe("acompanhamento e dashboard", () => {
   test("registra um check-in no Dashboard e mostra o histórico", async ({
     page,
@@ -20,5 +22,6 @@ test.describe("acompanhamento e dashboard", () => {
     await page.goto("/historico");
     await expect(page.getByText("Estudo E2E")).toBeVisible();
     await expect(page.getByText("45min")).toBeVisible();
+    await expectNoAccessibilityViolations(page);
   });
 });
