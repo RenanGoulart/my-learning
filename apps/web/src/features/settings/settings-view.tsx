@@ -64,7 +64,7 @@ export function SettingsView() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "NÃ£o foi possÃ­vel validar o arquivo.",
+          : "Não foi possível validar o arquivo.",
       );
     } finally {
       setIsPreviewing(false);
@@ -85,7 +85,7 @@ export function SettingsView() {
       setError(
         cause instanceof Error
           ? cause.message
-          : "NÃ£o foi possÃ­vel restaurar o backup.",
+          : "Não foi possível restaurar o backup.",
       );
     } finally {
       setIsImporting(false);
@@ -114,14 +114,14 @@ export function SettingsView() {
         <CardHeader>
           <CardTitle>Armazenamento local</CardTitle>
           <CardDescription>
-            InformaÃ§Ãµes da instÃ¢ncia em execuÃ§Ã£o.
+            Informações da instância em execução.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
           {system.isPending ? <p>Carregando...</p> : null}
           {system.isError ? (
             <p role="alert">
-              NÃ£o foi possÃ­vel carregar as configuraÃ§Ãµes locais.
+              Não foi possível carregar as configurações locais.
             </p>
           ) : null}
           {system.data ? (
@@ -130,7 +130,7 @@ export function SettingsView() {
               <dd className="break-all font-mono">
                 {system.data.databasePath}
               </dd>
-              <dt className="text-muted-foreground">Fuso horÃ¡rio</dt>
+              <dt className="text-muted-foreground">Fuso horário</dt>
               <dd>{system.data.timeZone}</dd>
               <dt className="text-muted-foreground">Formato do backup</dt>
               <dd>{system.data.snapshotFormatVersion}</dd>
@@ -142,7 +142,7 @@ export function SettingsView() {
         <CardHeader>
           <CardTitle>Backup</CardTitle>
           <CardDescription>
-            Exporte todos os dados em um arquivo JSON legÃ­vel.
+            Exporte todos os dados em um arquivo JSON legível.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -190,7 +190,7 @@ export function SettingsView() {
                 ))}
               </ul>
               <p className="text-sm text-destructive">
-                Todos os dados atuais serÃ£o substituÃ­dos.
+                Todos os dados atuais serão substituídos.
               </p>
               <Button
                 onClick={() => setConfirmOpen(true)}
@@ -208,8 +208,8 @@ export function SettingsView() {
           <AlertDialogContent>
             <AlertDialogTitle>Substituir os dados locais?</AlertDialogTitle>
             <AlertDialogDescription>
-              Trilhas, recursos, respostas, requisitos e check-ins atuais serÃ£o
-              substituÃ­dos pelo backup validado.
+              Trilhas, recursos, respostas, requisitos e check-ins atuais serão
+              substituídos pelo backup validado.
             </AlertDialogDescription>
             <div className="mt-5 flex justify-end gap-2">
               <AlertDialogCancel
