@@ -26,6 +26,25 @@ describe("ResourceForm", () => {
     expect(screen.getByLabelText("Formato")).toHaveValue("");
   });
 
+  it("shows translated labels for the available formats", async () => {
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceForm
+          mode="create"
+          trailId="00000000-0000-4000-8000-000000000001"
+        />
+      </QueryClientProvider>,
+    );
+
+    await user.selectOptions(screen.getByLabelText("Categoria"), "MATERIAL");
+
+    expect(screen.getByRole("option", { name: "Curso" })).toHaveValue("COURSE");
+    expect(screen.getByRole("option", { name: "Documentação" })).toHaveValue(
+      "DOCUMENTATION",
+    );
+  });
+
   it("navigates to the created resource after a successful save", async () => {
     const saved = {
       id: "00000000-0000-4000-8000-000000000002",
