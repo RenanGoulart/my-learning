@@ -21,7 +21,7 @@ O repositorio usa pnpm workspaces e Turborepo:
 
 ## Requisitos
 
-- Node.js 24 (>=24 e <25)
+- Node.js 24 (>=24.15 e <25)
 - Corepack habilitado
 - pnpm 11.18.0
 
