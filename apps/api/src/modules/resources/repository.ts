@@ -201,7 +201,7 @@ export function createResourceRepository(prisma: PrismaClient) {
         });
         const detail = await findDetailIn(tx, input.id);
         if (!detail)
-          throw new Error("O recurso convertido nÃ£o pÃ´de ser carregado.");
+          throw new Error("O recurso convertido não pôde ser carregado.");
         return { kind: "converted" as const, resource: detail };
       });
     },

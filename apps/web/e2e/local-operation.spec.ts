@@ -24,8 +24,8 @@ const snapshot = {
   },
 };
 
-test.describe("operaÃ§Ã£o local", () => {
-  test("valida e restaura um backup somente apÃ³s confirmaÃ§Ã£o", async ({
+test.describe("operação local", () => {
+  test("valida e restaura um backup somente após confirmação", async ({
     page,
   }) => {
     await page.goto("/configuracoes");
@@ -38,7 +38,7 @@ test.describe("operaÃ§Ã£o local", () => {
     await page.getByRole("button", { name: "Validar arquivo" }).click();
     await expect(page.getByText("Resumo do backup")).toBeVisible();
     await expect(
-      page.getByText("Todos os dados atuais serÃ£o substituÃ­dos."),
+      page.getByText("Todos os dados atuais serão substituídos."),
     ).toBeVisible();
     await page
       .getByRole("button", { name: "Importar e substituir" })

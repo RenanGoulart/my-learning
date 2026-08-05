@@ -22,7 +22,7 @@ async function readImportFile(request: FastifyRequest) {
     if (part.file.truncated) {
       throw new AppError({
         code: "IMPORT_FILE_TOO_LARGE",
-        message: "O arquivo deve ter no mÃ¡ximo 10 MiB.",
+        message: "O arquivo deve ter no máximo 10 MiB.",
         statusCode: 413,
       });
     }
@@ -37,7 +37,7 @@ async function readImportFile(request: FastifyRequest) {
     ) {
       throw new AppError({
         code: "IMPORT_FILE_TOO_LARGE",
-        message: "O arquivo deve ter no mÃ¡ximo 10 MiB.",
+        message: "O arquivo deve ter no máximo 10 MiB.",
         statusCode: 413,
       });
     }

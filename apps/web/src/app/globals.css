@@ -120,6 +120,11 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+  input:not([type="hidden"]),
+  textarea,
+  select {
+    border: 2px solid var(--input);
+  }
   body {
     @apply bg-background text-foreground;
   }

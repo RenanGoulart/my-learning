@@ -44,7 +44,7 @@ describe("SettingsView", () => {
 
     expect(await screen.findByText("2 trilhas")).toBeVisible();
     expect(
-      screen.getByText(/todos os dados atuais serÃ£o substituÃ­dos/i),
+      screen.getByText(/todos os dados atuais serão substituídos/i),
     ).toBeVisible();
     expect(
       screen.getByRole("button", { name: "Importar e substituir" }),
