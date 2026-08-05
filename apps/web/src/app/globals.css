@@ -125,6 +125,14 @@ body {
   select {
     border: 2px solid var(--input);
   }
+  select,
+  select option {
+    background-color: var(--card);
+    color: var(--foreground);
+  }
+  .dark select {
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground;
   }
