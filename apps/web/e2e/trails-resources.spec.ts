@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { expectNoAccessibilityViolations } from "./accessibility";
+
 test.describe("trilhas e recursos", () => {
   test("cria, ordena, progride, converte e exclui recursos", async ({
     page,
@@ -104,5 +106,6 @@ test.describe("trilhas e recursos", () => {
       .locator("body")
       .evaluate((body) => body.scrollWidth <= window.innerWidth);
     expect(noOverflow).toBe(true);
+    await expectNoAccessibilityViolations(page);
   });
 });

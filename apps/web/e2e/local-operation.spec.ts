@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { expectNoAccessibilityViolations } from "./accessibility";
+
 const snapshot = {
   formatVersion: "1.0.0",
   exportedAt: "2026-08-05T12:00:00.000Z",
@@ -48,5 +50,6 @@ test.describe("operaÃ§Ã£o local", () => {
     await expect(page.getByText("Backup restaurado.")).toBeVisible();
     await page.goto("/trilhas");
     await expect(page.getByText("Trilha restaurada")).toBeVisible();
+    await expectNoAccessibilityViolations(page);
   });
 });
