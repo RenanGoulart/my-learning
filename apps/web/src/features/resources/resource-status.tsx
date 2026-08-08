@@ -56,19 +56,22 @@ export function ResourceStatus({
               <label
                 key={value}
                 className={cn(
-                  "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20",
+                  "relative flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20",
                   current === value && presentation.className,
                 )}
               >
                 <input
                   checked={current === value}
-                  className="sr-only"
+                  className="absolute inset-0 z-10 size-full cursor-pointer opacity-0"
                   disabled={mutation.isPending}
                   name={`status-${resourceId}`}
                   onChange={() => selectStatus(value)}
                   type="radio"
                 />
-                <span aria-hidden className="size-2 rounded-full bg-current" />
+                <span
+                  aria-hidden
+                  className="pointer-events-none size-2 rounded-full bg-current"
+                />
                 {label}
               </label>
             );

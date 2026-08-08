@@ -13,7 +13,10 @@ test.describe("trilhas e recursos", () => {
       page.getByRole("heading", { name: "Trilha E2E" }),
     ).toBeVisible();
     const trailPath = page.url();
-    await page.getByRole("button", { name: "Novo recurso" }).click();
+    await page
+      .locator("header")
+      .getByRole("button", { name: "Novo recurso" })
+      .click();
     await page.getByLabel("Título").fill("Material A");
     await page.getByLabel("Categoria").selectOption("MATERIAL");
     await page.getByLabel("Formato").selectOption("COURSE");
@@ -23,7 +26,10 @@ test.describe("trilhas e recursos", () => {
       page.getByRole("heading", { name: "Material A" }),
     ).toBeVisible();
     await page.goto(trailPath);
-    await page.getByRole("button", { name: "Novo recurso" }).click();
+    await page
+      .locator("header")
+      .getByRole("button", { name: "Novo recurso" })
+      .click();
     await page.getByLabel("Título").fill("Material B");
     await page.getByLabel("Categoria").selectOption("MATERIAL");
     await page.getByLabel("Formato").selectOption("COURSE");
@@ -46,7 +52,7 @@ test.describe("trilhas e recursos", () => {
     await moveDown.press("Enter");
     await expect((await reordered).status()).toBe(200);
     await expect
-      .poll(() => page.locator("ol > li").allTextContents())
+      .poll(() => page.locator("ol > li").getByRole("link").allTextContents())
       .toEqual(["Material B", "Material A"]);
     await page.getByRole("link", { name: "Material A", exact: true }).click();
     const started = page.waitForResponse(
@@ -84,10 +90,9 @@ test.describe("trilhas e recursos", () => {
     );
     await page.getByRole("button", { name: "Converter" }).click();
     await expect((await converted).status()).toBe(200);
-    const statement = page
-      .getByRole("heading", { name: "Enunciado" })
-      .locator("..");
-    await expect(statement).toContainText("Explique A");
+    await expect(
+      page.getByRole("paragraph").filter({ hasText: "Explique A" }),
+    ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Abrir material" }),
     ).toHaveCount(0);
@@ -100,8 +105,12 @@ test.describe("trilhas e recursos", () => {
     await page.getByRole("button", { name: "Excluir" }).last().click();
     await expect((await deleted).status()).toBe(204);
     await expect(page).toHaveURL(trailPath);
-    await expect(page.getByText("Material A", { exact: true })).toHaveCount(0);
-    await expect(page.getByText("Material B", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Material A", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Material B", exact: true }),
+    ).toBeVisible();
     const noOverflow = await page
       .locator("body")
       .evaluate((body) => body.scrollWidth <= window.innerWidth);
