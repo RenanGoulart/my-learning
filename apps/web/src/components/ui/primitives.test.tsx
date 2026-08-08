@@ -15,6 +15,8 @@ it("forwards form semantics and exposes progress accessibly", () => {
         <option value="MATERIAL">Material</option>
       </NativeSelect>
       <Progress label="Progresso da trilha" value={68} />
+      <Progress label="Progresso abaixo do limite" value={-1} />
+      <Progress label="Progresso acima do limite" value={101} />
     </>,
   );
 
@@ -24,4 +26,10 @@ it("forwards form semantics and exposes progress accessibly", () => {
   expect(
     screen.getByRole("progressbar", { name: "Progresso da trilha" }),
   ).toHaveAttribute("aria-valuenow", "68");
+  expect(
+    screen.getByRole("progressbar", { name: "Progresso abaixo do limite" }),
+  ).toHaveAttribute("aria-valuenow", "0");
+  expect(
+    screen.getByRole("progressbar", { name: "Progresso acima do limite" }),
+  ).toHaveAttribute("aria-valuenow", "100");
 });
