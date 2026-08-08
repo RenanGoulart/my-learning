@@ -17,6 +17,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import type { ResourceSummary } from "@my-learning/contracts";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -24,8 +26,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ResourceIcon } from "./resource-icon";
 import { useResourceOrder } from "./queries";
-type Item = { id: string; title: string; position: number };
+
+type Item = Pick<
+  ResourceSummary,
+  "id" | "title" | "position" | "category" | "format" | "status"
+>;
 export function ResourceOrderList({
   trailId,
   resources,
@@ -124,7 +131,7 @@ function SortableResource({
         transition: sortable.transition,
       }}
     >
-      <span className="flex min-w-0 items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <Button
           aria-label={`Arrastar ${resource.title}`}
           disabled={disabled}
@@ -136,29 +143,42 @@ function SortableResource({
         >
           <GripVertical />
         </Button>
-        <Link
-          className="truncate underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          href={`/recursos/${resource.id}`}
-        >
-          {resource.title}
-        </Link>
-      </span>
-      <span className="flex gap-1">
-        <MoveButton
-          disabled={disabled || isFirst}
-          label={`Mover ${resource.title} para cima`}
-          onClick={() => onMove(index, -1)}
-        >
-          <ArrowUp />
-        </MoveButton>
-        <MoveButton
-          disabled={disabled || isLast}
-          label={`Mover ${resource.title} para baixo`}
-          onClick={() => onMove(index, 1)}
-        >
-          <ArrowDown />
-        </MoveButton>
-      </span>
+        <ResourceIcon
+          className="size-8 rounded-lg [&_svg]:size-4"
+          format={resource.format}
+        />
+        <div className="min-w-0">
+          <Link
+            className="truncate font-medium underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            href={`/recursos/${resource.id}`}
+          >
+            {resource.title}
+          </Link>
+          <p className="text-xs text-muted-foreground">
+            {resource.category === "MATERIAL" ? "Material" : "Prática"} ·{" "}
+            {resource.format}
+          </p>
+        </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-2">
+        <StatusBadge status={resource.status} />
+        <span className="flex gap-1">
+          <MoveButton
+            disabled={disabled || isFirst}
+            label={`Mover ${resource.title} para cima`}
+            onClick={() => onMove(index, -1)}
+          >
+            <ArrowUp />
+          </MoveButton>
+          <MoveButton
+            disabled={disabled || isLast}
+            label={`Mover ${resource.title} para baixo`}
+            onClick={() => onMove(index, 1)}
+          >
+            <ArrowDown />
+          </MoveButton>
+        </span>
+      </div>
     </li>
   );
 }

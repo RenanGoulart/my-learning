@@ -3,6 +3,12 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ResourceOrderList } from "./resource-order-list";
+
+const resourcePresentation = {
+  category: "MATERIAL" as const,
+  format: "DOCUMENTATION" as const,
+  status: "IN_PROGRESS" as const,
+};
 const { reorderResources } = vi.hoisted(() => ({
   reorderResources: vi.fn().mockResolvedValue([]),
 }));
@@ -18,6 +24,7 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
           ]}
         />
@@ -41,11 +48,13 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
             {
               id: "00000000-0000-4000-8000-000000000012",
               title: "Segundo",
               position: 2,
+              ...resourcePresentation,
             },
           ]}
         />
@@ -76,11 +85,13 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
             {
               id: "00000000-0000-4000-8000-000000000012",
               title: "Segundo",
               position: 2,
+              ...resourcePresentation,
             },
           ]}
         />
@@ -113,11 +124,13 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
             {
               id: "00000000-0000-4000-8000-000000000012",
               title: "Segundo",
               position: 2,
+              ...resourcePresentation,
             },
           ]}
         />
