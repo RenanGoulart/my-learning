@@ -20,3 +20,12 @@ it("formats history dates and durations", () => {
   expect(screen.getByText("01/08/2026")).toBeVisible();
   expect(screen.getByText("1h 30min")).toBeVisible();
 });
+
+it("offers a useful empty history state", () => {
+  render(<CheckInHistory checkIns={[]} />);
+
+  expect(screen.getByText("Nenhum check-in registrado")).toBeVisible();
+  expect(
+    screen.getByText("Seus registros diários aparecerão aqui."),
+  ).toBeVisible();
+});

@@ -27,6 +27,21 @@ vi.mock("./api", () => ({
 import { SettingsView } from "./settings-view.js";
 
 describe("SettingsView", () => {
+  it("organizes settings into storage, export, and restore regions", async () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <SettingsView />
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Configurações" }),
+    ).toBeVisible();
+    expect(screen.getByText("Armazenamento local")).toBeVisible();
+    expect(screen.getByText("Exportar backup")).toBeVisible();
+    expect(screen.getByText("Restaurar backup")).toBeVisible();
+  });
+
   it("shows the preview and replacement warning before confirmation", async () => {
     const user = userEvent.setup();
     render(
