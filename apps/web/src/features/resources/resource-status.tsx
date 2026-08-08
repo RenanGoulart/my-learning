@@ -56,7 +56,7 @@ export function ResourceStatus({
               <label
                 key={value}
                 className={cn(
-                  "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm",
+                  "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20",
                   current === value && presentation.className,
                 )}
               >
