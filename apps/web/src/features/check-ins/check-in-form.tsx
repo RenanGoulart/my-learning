@@ -1,8 +1,9 @@
 "use client";
+
 import type { CurrentCheckInResponse } from "@my-learning/contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -12,6 +13,11 @@ import {
   AlertDialogPortal,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
 import { deleteCheckIn, saveCheckIn } from "./api";
 import { DurationFieldsError, durationFieldsToMinutes } from "./duration";
 import { checkInKeys } from "./queries";
@@ -65,66 +71,99 @@ export function CheckInForm({
       setError("Não foi possível excluir o check-in.");
     }
   };
+
   return (
     <section className="space-y-4">
       <h2 className="text-xl font-semibold">Check-in de hoje</h2>
-      {error ? (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : null}
-      <label className="block text-sm font-medium">
-        Horas
-        <input
-          aria-invalid={Boolean(fieldErrors.hours)}
-          className="mt-1 block"
-          inputMode="numeric"
-          onChange={(event) => setHours(event.target.value)}
-          value={hours}
-        />
-      </label>
-      {fieldErrors.hours?.map((message) => (
-        <p className="text-sm text-destructive" key={message} role="alert">
-          {message}
-        </p>
-      ))}
-      <label className="block text-sm font-medium">
-        Minutos
-        <input
-          aria-invalid={Boolean(fieldErrors.minutes)}
-          className="mt-1 block"
-          inputMode="numeric"
-          onChange={(event) => setMinutes(event.target.value)}
-          value={minutes}
-        />
-      </label>
-      {fieldErrors.minutes?.map((message) => (
-        <p className="text-sm text-destructive" key={message} role="alert">
-          {message}
-        </p>
-      ))}
-      <label className="block text-sm font-medium">
-        Observação
-        <textarea
-          className="mt-1 block"
-          onChange={(event) => setNote(event.target.value)}
-          value={note}
-        />
-      </label>
-      <div className="flex gap-2">
-        <Button onClick={() => void save()} type="button">
-          {checkIn ? "Salvar alterações" : "Registrar check-in"}
-        </Button>
-        {checkIn ? (
-          <Button
-            onClick={() => setDeleteOpen(true)}
-            type="button"
-            variant="destructive"
-          >
-            Excluir check-in
-          </Button>
-        ) : null}
-      </div>
+      <Card className="border-violet-200 bg-violet-50/50 dark:border-violet-900 dark:bg-violet-950/20">
+        <CardContent className="space-y-4">
+          {error ? (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          ) : null}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label
+                className="block text-sm font-medium"
+                htmlFor="check-in-hours"
+              >
+                Horas
+              </label>
+              <Input
+                aria-invalid={Boolean(fieldErrors.hours)}
+                className="mt-1"
+                id="check-in-hours"
+                inputMode="numeric"
+                onChange={(event) => setHours(event.target.value)}
+                value={hours}
+              />
+              {fieldErrors.hours?.map((message) => (
+                <p
+                  className="mt-1 text-sm text-destructive"
+                  key={message}
+                  role="alert"
+                >
+                  {message}
+                </p>
+              ))}
+            </div>
+            <div>
+              <label
+                className="block text-sm font-medium"
+                htmlFor="check-in-minutes"
+              >
+                Minutos
+              </label>
+              <Input
+                aria-invalid={Boolean(fieldErrors.minutes)}
+                className="mt-1"
+                id="check-in-minutes"
+                inputMode="numeric"
+                onChange={(event) => setMinutes(event.target.value)}
+                value={minutes}
+              />
+              {fieldErrors.minutes?.map((message) => (
+                <p
+                  className="mt-1 text-sm text-destructive"
+                  key={message}
+                  role="alert"
+                >
+                  {message}
+                </p>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label
+              className="block text-sm font-medium"
+              htmlFor="check-in-note"
+            >
+              Observação
+            </label>
+            <Textarea
+              className="mt-1"
+              id="check-in-note"
+              onChange={(event) => setNote(event.target.value)}
+              value={note}
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => void save()} type="button">
+              {checkIn ? "Salvar alterações" : "Registrar check-in"}
+            </Button>
+            {checkIn ? (
+              <Button
+                onClick={() => setDeleteOpen(true)}
+                type="button"
+                variant="destructive"
+              >
+                Excluir check-in
+              </Button>
+            ) : null}
+          </div>
+        </CardContent>
+      </Card>
       <AlertDialog onOpenChange={setDeleteOpen} open={deleteOpen}>
         <AlertDialogPortal>
           <AlertDialogContent>
