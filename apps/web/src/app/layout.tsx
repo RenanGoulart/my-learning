@@ -19,12 +19,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="pt-BR"
+      suppressHydrationWarning
+      className={cn("font-sans", geist.variable)}
+    >
       <body>
         <TooltipProvider>
           <QueryProvider>
             <AppShell>{children}</AppShell>
-            <Toaster theme="light" />
+            <Toaster theme="system" />
           </QueryProvider>
         </TooltipProvider>
       </body>
