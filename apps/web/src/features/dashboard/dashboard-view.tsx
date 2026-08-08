@@ -126,13 +126,17 @@ function ActiveTrailsCard({
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-medium">{trail.title}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {trail.isComplete
-                          ? "Concluída"
-                          : trail.isActive
-                            ? "Em andamento"
-                            : "Não iniciada"}
-                      </p>
+                      <div className="mt-2">
+                        <StatusBadge
+                          status={
+                            trail.isComplete
+                              ? "COMPLETED"
+                              : trail.isActive
+                                ? "IN_PROGRESS"
+                                : "NOT_STARTED"
+                          }
+                        />
+                      </div>
                     </div>
                     <span className="text-sm font-medium tabular-nums">
                       {trail.progress.percentage}%

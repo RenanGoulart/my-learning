@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { DashboardView } from "./dashboard-view";
 
@@ -62,6 +62,11 @@ it("renders the learning overview, active trail progress, and continue link", ()
   expect(
     screen.getByRole("progressbar", { name: "Progresso de Web" }),
   ).toHaveAttribute("aria-valuenow", "50");
+  expect(
+    within(
+      screen.getByRole("link", { name: /Web Em andamento 50%/ }),
+    ).getByText("Em andamento"),
+  ).toHaveClass("bg-status-in-progress");
   expect(
     screen.getByRole("heading", { name: "Check-in de hoje" }),
   ).toBeVisible();
