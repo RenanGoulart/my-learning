@@ -50,10 +50,30 @@ describe("TrailForm", () => {
     await user.click(screen.getByRole("button", { name: "Salvar" }));
 
     expect(screen.getByLabelText("Título")).toHaveValue("Minha trilha");
-    expect(screen.getByRole("alert")).toHaveTextContent("Informe o título.");
+    expect(screen.getByText("Informe o título.")).toBeVisible();
     expect(screen.getByLabelText("Título")).toHaveAttribute(
       "aria-describedby",
-      "title-error",
+      "title-description title-error",
+    );
+  });
+
+  it("shows saving progress and associates the title description", async () => {
+    createTrail.mockImplementationOnce(() => new Promise(() => undefined));
+    const user = userEvent.setup();
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <TrailForm mode="create" />
+      </QueryClientProvider>,
+    );
+
+    await user.type(screen.getByLabelText("Título"), "Minha trilha");
+    await user.click(screen.getByRole("button", { name: "Salvar" }));
+
+    expect(screen.getByRole("button", { name: "Salvando..." })).toBeDisabled();
+    expect(screen.getByLabelText("Título")).toHaveAttribute(
+      "aria-describedby",
+      "title-description",
     );
   });
 });

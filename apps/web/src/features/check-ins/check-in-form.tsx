@@ -38,12 +38,14 @@ export function CheckInForm({
   );
   const [error, setError] = useState<string>();
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<"hours" | "minutes", string[]>>
   >({});
   const save = async () => {
     setError(undefined);
     setFieldErrors({});
+    setIsSaving(true);
     try {
       const durationMinutes = durationFieldsToMinutes({ hours, minutes });
       await saveCheckIn(currentLocalDate, {
@@ -60,6 +62,8 @@ export function CheckInForm({
             ? cause.message
             : "Não foi possível salvar o check-in.",
         );
+    } finally {
+      setIsSaving(false);
     }
   };
   const remove = async () => {
@@ -149,8 +153,16 @@ export function CheckInForm({
             />
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button onClick={() => void save()} type="button">
-              {checkIn ? "Salvar alterações" : "Registrar check-in"}
+            <Button
+              disabled={isSaving}
+              onClick={() => void save()}
+              type="button"
+            >
+              {isSaving
+                ? "Salvando..."
+                : checkIn
+                  ? "Salvar alterações"
+                  : "Registrar check-in"}
             </Button>
             {checkIn ? (
               <Button
