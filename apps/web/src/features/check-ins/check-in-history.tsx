@@ -46,7 +46,7 @@ export function CheckInHistory({ checkIns }: { checkIns: StudyCheckIn[] }) {
               <Card>
                 <CardContent className="flex gap-3 p-4">
                   <CalendarDays aria-hidden className="size-5 text-primary" />
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-medium">
                       {formatLocalDate(checkIn.localDate)}
                     </p>
@@ -55,7 +55,7 @@ export function CheckInHistory({ checkIns }: { checkIns: StudyCheckIn[] }) {
                       {formatDuration(checkIn.durationMinutes)}
                     </p>
                     {checkIn.note ? (
-                      <p className="mt-2 text-sm">{checkIn.note}</p>
+                      <p className="mt-2 break-words text-sm">{checkIn.note}</p>
                     ) : null}
                   </div>
                 </CardContent>

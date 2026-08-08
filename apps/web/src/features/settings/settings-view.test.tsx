@@ -37,9 +37,15 @@ describe("SettingsView", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Configurações" }),
     ).toBeVisible();
-    expect(screen.getByText("Armazenamento local")).toBeVisible();
-    expect(screen.getByText("Exportar backup")).toBeVisible();
-    expect(screen.getByText("Restaurar backup")).toBeVisible();
+    expect(
+      screen.getByRole("region", { name: "Armazenamento local" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("region", { name: "Exportar backup" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("region", { name: "Restaurar backup" }),
+    ).toBeVisible();
   });
 
   it("shows the preview and replacement warning before confirmation", async () => {

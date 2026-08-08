@@ -140,7 +140,7 @@ export function SettingsView() {
         </Alert>
       ) : null}
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card aria-labelledby="storage-title">
+        <Card aria-labelledby="storage-title" role="region">
           <CardHeader>
             <Database aria-hidden className="size-5 text-primary" />
             <CardTitle id="storage-title">Armazenamento local</CardTitle>
@@ -171,7 +171,7 @@ export function SettingsView() {
             ) : null}
           </CardContent>
         </Card>
-        <Card aria-labelledby="export-title">
+        <Card aria-labelledby="export-title" role="region">
           <CardHeader>
             <Download aria-hidden className="size-5 text-primary" />
             <CardTitle id="export-title">Exportar backup</CardTitle>
@@ -186,7 +186,11 @@ export function SettingsView() {
             </Button>
           </CardContent>
         </Card>
-        <Card className="xl:col-span-2" aria-labelledby="restore-title">
+        <Card
+          aria-labelledby="restore-title"
+          className="xl:col-span-2"
+          role="region"
+        >
           <CardHeader>
             <Upload aria-hidden className="size-5 text-primary" />
             <CardTitle id="restore-title">Restaurar backup</CardTitle>
