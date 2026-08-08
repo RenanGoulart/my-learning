@@ -1,8 +1,25 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { AppShell } from "./app-shell.js";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/trilhas",
+}));
+
+vi.mock("@/features/dashboard/queries", () => ({
+  useDashboard: () => ({
+    data: {
+      continueStudying: [
+        {
+          resourceId: "550e8400-e29b-41d4-a716-446655440001",
+          resourceTitle: "HTTP",
+        },
+      ],
+    },
+  }),
+}));
 
 describe("AppShell", () => {
   it("renders the operational destinations", () => {
@@ -27,6 +44,14 @@ describe("AppShell", () => {
     expect(screen.getByRole("link", { name: "Configurações" })).toHaveAttribute(
       "href",
       "/configuracoes",
+    );
+    expect(screen.getByRole("link", { name: "Trilhas" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: /Continuar HTTP/ })).toHaveAttribute(
+      "href",
+      "/recursos/550e8400-e29b-41d4-a716-446655440001",
     );
   });
 
