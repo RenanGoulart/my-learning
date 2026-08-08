@@ -1,5 +1,11 @@
 "use client";
 import { useState } from "react";
+
+import type { ResourceSummary } from "@my-learning/contracts";
+
+import { getStatusPresentation } from "@/components/shared/status-badge";
+import { cn } from "@/lib/utils";
+
 import { useResourceStatus } from "./queries";
 const options = [
   ["NOT_STARTED", "Não iniciado"],
@@ -23,6 +29,18 @@ export function ResourceStatus({
   const [current, setCurrent] = useState(status);
   const [error, setError] = useState(false);
   const mutation = useResourceStatus(resourceId, trailId);
+  const selectStatus = (value: ResourceSummary["status"]) => {
+    const previous = current;
+    setCurrent(value);
+    setError(false);
+    mutation.mutate(value, {
+      onError: () => {
+        setCurrent(previous);
+        setError(true);
+      },
+    });
+  };
+
   return (
     <fieldset>
       <legend className="text-sm font-medium">Status</legend>
@@ -31,28 +49,30 @@ export function ResourceStatus({
           .filter(([value]) =>
             (transitions[current] as readonly string[]).includes(value),
           )
-          .map(([value, label]) => (
-            <label key={value} className="flex items-center gap-1 text-sm">
-              <input
-                disabled={mutation.isPending}
-                type="radio"
-                name={`status-${resourceId}`}
-                checked={current === value}
-                onChange={() => {
-                  const previous = current;
-                  setCurrent(value);
-                  setError(false);
-                  mutation.mutate(value, {
-                    onError: () => {
-                      setCurrent(previous);
-                      setError(true);
-                    },
-                  });
-                }}
-              />
-              {label}
-            </label>
-          ))}
+          .map(([value, label]) => {
+            const presentation = getStatusPresentation(value);
+
+            return (
+              <label
+                key={value}
+                className={cn(
+                  "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm",
+                  current === value && presentation.className,
+                )}
+              >
+                <input
+                  checked={current === value}
+                  className="sr-only"
+                  disabled={mutation.isPending}
+                  name={`status-${resourceId}`}
+                  onChange={() => selectStatus(value)}
+                  type="radio"
+                />
+                <span aria-hidden className="size-2 rounded-full bg-current" />
+                {label}
+              </label>
+            );
+          })}
       </div>
       {error ? (
         <p role="alert" className="mt-2 text-sm text-destructive">

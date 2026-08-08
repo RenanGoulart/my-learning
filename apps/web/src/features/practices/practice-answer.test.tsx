@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ResourceDetail } from "@my-learning/contracts";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PracticeAnswer } from "./practice-answer";
 
@@ -31,6 +31,40 @@ const resource: ResourceDetail = {
 };
 
 describe("PracticeAnswer", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("shows saving feedback and restores the action after a failed save", async () => {
+    let rejectSave: (reason?: unknown) => void = () => undefined;
+    savePracticeAnswer.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          rejectSave = reject;
+        }),
+    );
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <PracticeAnswer resource={resource} />
+      </QueryClientProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Salvar resposta" }));
+
+    try {
+      expect(
+        screen.getByRole("button", { name: "Salvando..." }),
+      ).toBeDisabled();
+    } finally {
+      await act(async () => {
+        rejectSave(new Error("Falha ao salvar"));
+      });
+    }
+
+    expect(
+      await screen.findByRole("button", { name: "Salvar resposta" }),
+    ).toBeEnabled();
+  });
+
   it("saves only after the explicit answer action", async () => {
     savePracticeAnswer.mockResolvedValueOnce({
       ...resource,
