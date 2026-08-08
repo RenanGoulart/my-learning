@@ -132,17 +132,24 @@ function SortableResource({
       }}
     >
       <div className="flex min-w-0 items-center gap-2">
-        <Button
-          aria-label={`Arrastar ${resource.title}`}
-          disabled={disabled}
-          size="icon-xs"
-          type="button"
-          variant="ghost"
-          {...sortable.attributes}
-          {...sortable.listeners}
-        >
-          <GripVertical />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                aria-label={`Arrastar ${resource.title}`}
+                disabled={disabled}
+                size="icon-xs"
+                type="button"
+                variant="ghost"
+                {...sortable.attributes}
+                {...sortable.listeners}
+              />
+            }
+          >
+            <GripVertical />
+          </TooltipTrigger>
+          <TooltipContent>Arrastar {resource.title}</TooltipContent>
+        </Tooltip>
         <ResourceIcon
           className="size-8 rounded-lg [&_svg]:size-4"
           format={resource.format}

@@ -37,6 +37,33 @@ describe("ResourceOrderList", () => {
     );
   });
 
+  it("shows the drag handle tooltip using its accessible name", async () => {
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceOrderList
+          trailId="00000000-0000-4000-8000-000000000001"
+          resources={[
+            {
+              id: "00000000-0000-4000-8000-000000000011",
+              title: "Primeiro",
+              position: 1,
+              ...resourcePresentation,
+            },
+          ]}
+        />
+      </QueryClientProvider>,
+    );
+
+    const dragHandle = screen.getByRole("button", {
+      name: "Arrastar Primeiro",
+    });
+
+    await user.hover(dragHandle);
+
+    expect(dragHandle).toHaveAttribute("data-popup-open");
+  });
+
   it("moves a resource down through its accessible action", async () => {
     const user = userEvent.setup();
     render(
