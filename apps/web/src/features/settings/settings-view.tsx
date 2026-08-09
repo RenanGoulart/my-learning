@@ -3,9 +3,10 @@
 import type { ChangeEvent } from "react";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DownloadIcon, UploadIcon } from "lucide-react";
+import { Database, Download, Settings, Upload } from "lucide-react";
 import { toast } from "sonner";
 
+import { PageHeader } from "@/components/shared/page-header";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -23,6 +24,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { confirmImport, previewImport } from "@/features/import-export/api";
 
 import { getSystemInfo } from "./api";
@@ -34,6 +37,32 @@ const countLabels = {
   projectRequirements: "requisitos de projeto",
   studyCheckIns: "check-ins",
 } as const;
+
+type BackupPreviewProps = {
+  preview: Awaited<ReturnType<typeof previewImport>>;
+  onConfirm: () => void;
+};
+
+function BackupPreview({ preview, onConfirm }: BackupPreviewProps) {
+  return (
+    <div className="space-y-3 rounded-lg border p-4">
+      <p className="font-medium">Resumo do backup</p>
+      <ul className="grid gap-1 text-sm sm:grid-cols-2">
+        {Object.entries(preview.counts).map(([key, count]) => (
+          <li key={key}>
+            {count} {countLabels[key as keyof typeof countLabels]}
+          </li>
+        ))}
+      </ul>
+      <p className="text-sm text-destructive">
+        Todos os dados atuais serão substituídos.
+      </p>
+      <Button onClick={onConfirm} type="button" variant="destructive">
+        Importar e substituir
+      </Button>
+    </div>
+  );
+}
 
 export function SettingsView() {
   const queryClient = useQueryClient();
@@ -98,111 +127,105 @@ export function SettingsView() {
   };
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Configurações</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Dados e backup da instalação local.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        description="Dados e backup da instalação local."
+        eyebrow="Preferências"
+        icon={Settings}
+        title="Configurações"
+      />
       {error ? (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : null}
-      <Card>
-        <CardHeader>
-          <CardTitle>Armazenamento local</CardTitle>
-          <CardDescription>
-            Informações da instância em execução.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {system.isPending ? <p>Carregando...</p> : null}
-          {system.isError ? (
-            <p role="alert">
-              Não foi possível carregar as configurações locais.
-            </p>
-          ) : null}
-          {system.data ? (
-            <dl className="grid gap-2 text-sm sm:grid-cols-[10rem_1fr]">
-              <dt className="text-muted-foreground">Banco SQLite</dt>
-              <dd className="break-all font-mono">
-                {system.data.databasePath}
-              </dd>
-              <dt className="text-muted-foreground">Fuso horário</dt>
-              <dd>{system.data.timeZone}</dd>
-              <dt className="text-muted-foreground">Formato do backup</dt>
-              <dd>{system.data.snapshotFormatVersion}</dd>
-            </dl>
-          ) : null}
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Backup</CardTitle>
-          <CardDescription>
-            Exporte todos os dados em um arquivo JSON legível.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={download} type="button">
-            <DownloadIcon data-icon="inline-start" />
-            Exportar JSON
-          </Button>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Restaurar backup</CardTitle>
-          <CardDescription>
-            Valide o arquivo antes de substituir os dados locais.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <label className="block text-sm font-medium">
-            Arquivo JSON
-            <input
+      <div className="grid gap-4 xl:grid-cols-2">
+        <Card aria-labelledby="storage-title" role="region">
+          <CardHeader>
+            <Database aria-hidden className="size-5 text-primary" />
+            <CardTitle id="storage-title">Armazenamento local</CardTitle>
+            <CardDescription>
+              Informações da instância em execução.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {system.isPending ? <Skeleton className="h-20" /> : null}
+            {system.isError ? (
+              <Alert variant="destructive">
+                <AlertDescription>
+                  Não foi possível carregar as configurações locais.
+                </AlertDescription>
+              </Alert>
+            ) : null}
+            {system.data ? (
+              <dl className="grid gap-2 text-sm sm:grid-cols-[10rem_1fr]">
+                <dt className="text-muted-foreground">Banco SQLite</dt>
+                <dd className="break-all font-mono">
+                  {system.data.databasePath}
+                </dd>
+                <dt className="text-muted-foreground">Fuso horário</dt>
+                <dd>{system.data.timeZone}</dd>
+                <dt className="text-muted-foreground">Formato do backup</dt>
+                <dd>{system.data.snapshotFormatVersion}</dd>
+              </dl>
+            ) : null}
+          </CardContent>
+        </Card>
+        <Card aria-labelledby="export-title" role="region">
+          <CardHeader>
+            <Download aria-hidden className="size-5 text-primary" />
+            <CardTitle id="export-title">Exportar backup</CardTitle>
+            <CardDescription>
+              Exporte todos os dados em um arquivo JSON legível.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={download} type="button">
+              <Download aria-hidden data-icon="inline-start" />
+              Exportar JSON
+            </Button>
+          </CardContent>
+        </Card>
+        <Card
+          aria-labelledby="restore-title"
+          className="xl:col-span-2"
+          role="region"
+        >
+          <CardHeader>
+            <Upload aria-hidden className="size-5 text-primary" />
+            <CardTitle id="restore-title">Restaurar backup</CardTitle>
+            <CardDescription>
+              Valide o arquivo antes de substituir os dados locais.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <label className="block text-sm font-medium" htmlFor="backup-file">
+              Arquivo JSON
+            </label>
+            <Input
               accept="application/json,.json"
-              aria-label="Arquivo JSON"
-              className="mt-1 block w-full"
+              id="backup-file"
               onChange={selectFile}
               type="file"
             />
-          </label>
-          <Button
-            disabled={!file || isPreviewing}
-            onClick={() => void validate()}
-            type="button"
-            variant="outline"
-          >
-            <UploadIcon data-icon="inline-start" />
-            {isPreviewing ? "Validando..." : "Validar arquivo"}
-          </Button>
-          {preview ? (
-            <div className="space-y-3 rounded-lg border p-4">
-              <p className="font-medium">Resumo do backup</p>
-              <ul className="grid gap-1 text-sm sm:grid-cols-2">
-                {Object.entries(preview.counts).map(([key, count]) => (
-                  <li key={key}>
-                    {count} {countLabels[key as keyof typeof countLabels]}
-                  </li>
-                ))}
-              </ul>
-              <p className="text-sm text-destructive">
-                Todos os dados atuais serão substituídos.
-              </p>
-              <Button
-                onClick={() => setConfirmOpen(true)}
-                type="button"
-                variant="destructive"
-              >
-                Importar e substituir
-              </Button>
-            </div>
-          ) : null}
-        </CardContent>
-      </Card>
+            <Button
+              disabled={!file || isPreviewing}
+              onClick={() => void validate()}
+              type="button"
+              variant="outline"
+            >
+              <Upload aria-hidden data-icon="inline-start" />
+              {isPreviewing ? "Validando..." : "Validar arquivo"}
+            </Button>
+            {preview ? (
+              <BackupPreview
+                onConfirm={() => setConfirmOpen(true)}
+                preview={preview}
+              />
+            ) : null}
+          </CardContent>
+        </Card>
+      </div>
       <AlertDialog onOpenChange={setConfirmOpen} open={confirmOpen}>
         <AlertDialogPortal>
           <AlertDialogContent>

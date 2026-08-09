@@ -6,11 +6,11 @@
   --card: oklch(1 0 0);
   --border: oklch(0.922 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --primary: oklch(0.205 0 0);
+  --muted-foreground: oklch(0.52 0 0);
+  --primary: oklch(0.541 0.281 293.009);
   --primary-foreground: oklch(0.985 0 0);
   --ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
+  --background: oklch(0.982 0.004 286.32);
   --foreground: oklch(0.145 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -19,33 +19,43 @@
   --secondary-foreground: oklch(0.205 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.696 0.20 32.32);
+  --destructive: oklch(0.696 0.2 32.32);
+  --destructive-foreground: oklch(0.145 0 0);
   --input: oklch(0.922 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --status-not-started: oklch(0.968 0.007 247.896);
+  --status-not-started-foreground: oklch(0.372 0.044 257.287);
+  --status-not-started-border: oklch(0.869 0.022 252.894);
+  --status-in-progress: oklch(0.962 0.059 95.617);
+  --status-in-progress-foreground: oklch(0.414 0.112 45.904);
+  --status-in-progress-border: oklch(0.828 0.189 84.429);
+  --status-completed: oklch(0.962 0.044 156.743);
+  --status-completed-foreground: oklch(0.393 0.095 152.535);
+  --status-completed-border: oklch(0.845 0.143 164.978);
+  --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.95 0.04 293);
+  --sidebar-accent-foreground: oklch(0.4 0.17 293);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  --background: oklch(0.16 0 0);
+  --background: oklch(0.145 0.018 285.82);
   --foreground: oklch(0.96 0 0);
   --card: oklch(0.2 0 0);
   --card-foreground: oklch(0.96 0 0);
   --popover: oklch(0.2 0 0);
   --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.96 0 0);
-  --primary-foreground: oklch(0.2 0 0);
+  --primary: oklch(0.702 0.183 293.541);
+  --primary-foreground: oklch(0.21 0.034 264.665);
   --secondary: oklch(0.27 0 0);
   --secondary-foreground: oklch(0.96 0 0);
   --muted: oklch(0.27 0 0);
@@ -59,10 +69,19 @@
   --sidebar-foreground: oklch(0.96 0 0);
   --sidebar-primary: oklch(0.96 0 0);
   --sidebar-primary-foreground: oklch(0.2 0 0);
-  --sidebar-accent: oklch(0.27 0 0);
-  --sidebar-accent-foreground: oklch(0.96 0 0);
+  --sidebar-accent: oklch(0.3 0.07 293);
+  --sidebar-accent-foreground: oklch(0.9 0.04 293);
   --sidebar-border: oklch(0.32 0 0);
   --sidebar-ring: oklch(0.62 0 0);
+  --status-not-started: oklch(0.279 0.041 260.031);
+  --status-not-started-foreground: oklch(0.869 0.022 252.894);
+  --status-not-started-border: oklch(0.446 0.043 257.281);
+  --status-in-progress: oklch(0.279 0.077 45.635);
+  --status-in-progress-foreground: oklch(0.924 0.12 95.746);
+  --status-in-progress-border: oklch(0.555 0.163 48.998);
+  --status-completed: oklch(0.266 0.065 152.934);
+  --status-completed-foreground: oklch(0.905 0.093 164.15);
+  --status-completed-border: oklch(0.527 0.154 150.069);
 }
 
 @theme inline {
@@ -74,6 +93,15 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-status-not-started: var(--status-not-started);
+  --color-status-not-started-foreground: var(--status-not-started-foreground);
+  --color-status-not-started-border: var(--status-not-started-border);
+  --color-status-in-progress: var(--status-in-progress);
+  --color-status-in-progress-foreground: var(--status-in-progress-foreground);
+  --color-status-in-progress-border: var(--status-in-progress-border);
+  --color-status-completed: var(--status-completed);
+  --color-status-completed-foreground: var(--status-completed-foreground);
+  --color-status-completed-border: var(--status-completed-border);
   --color-ring: var(--ring);
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
@@ -92,6 +120,7 @@
   --color-chart-1: var(--chart-1);
   --color-input: var(--input);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -108,40 +137,18 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-* {
-  border-color: var(--border);
-}
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  input:not([type="hidden"]),
-  select {
-    border-radius: 4px;
-    border: 2px solid var(--input);
-    width: min(100%, 14rem);
-  }
-  textarea {
-    border: 2px solid var(--input);
-    width: min(100%, 42rem);
-  }
-  select,
-  select option {
-    background-color: var(--card);
-    color: var(--foreground);
-  }
-  .dark select {
+  .dark {
     color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
   }
 }

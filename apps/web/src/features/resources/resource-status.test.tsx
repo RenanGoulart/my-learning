@@ -11,6 +11,42 @@ const { updateResourceStatus } = vi.hoisted(() => ({
 vi.mock("./api", () => ({ updateResourceStatus }));
 
 describe("ResourceStatus", () => {
+  it("shows a focus location when a status option receives keyboard focus", async () => {
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceStatus
+          resourceId="00000000-0000-4000-8000-000000000001"
+          status="NOT_STARTED"
+        />
+      </QueryClientProvider>,
+    );
+
+    await user.tab();
+
+    const radio = screen.getByRole("radio", { name: "Não iniciado" });
+    expect(radio).toHaveFocus();
+    expect(radio.closest("label")).toHaveClass(
+      "focus-within:ring-3",
+      "focus-within:ring-ring/20",
+    );
+  });
+
+  it("uses the amber status presentation for the selected in-progress option", () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceStatus
+          resourceId="00000000-0000-4000-8000-000000000001"
+          status="IN_PROGRESS"
+        />
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByRole("radio", { name: "Em andamento" }).closest("label"),
+    ).toHaveClass("text-status-in-progress-foreground");
+  });
+
   it("rolls back an optimistic status failure", async () => {
     updateResourceStatus.mockRejectedValueOnce(new Error("Falha"));
     const user = userEvent.setup();

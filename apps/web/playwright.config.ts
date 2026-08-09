@@ -41,7 +41,8 @@ export default defineConfig({
       },
     },
     {
-      command: "pnpm --dir ../.. --filter @my-learning/web dev",
+      command:
+        "pnpm --dir ../.. --filter @my-learning/web exec next dev --port 3000 --webpack",
       url: "http://127.0.0.1:3000",
       reuseExistingServer: false,
       timeout: 120_000,

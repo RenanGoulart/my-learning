@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { savePracticeAnswer } from "@/features/resources/api";
 import { resourceKeys } from "@/features/resources/queries";
 
@@ -43,13 +44,13 @@ export function PracticeAnswer({ resource }: { resource: ResourceDetail }) {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : null}
-      <textarea
+      <Textarea
         aria-label="Resposta atual"
         onChange={(event) => setAnswer(event.target.value)}
         value={answer}
       />
       <Button disabled={isSaving} onClick={() => void save()} type="button">
-        Salvar resposta
+        {isSaving ? "Salvando..." : "Salvar resposta"}
       </Button>
     </section>
   );

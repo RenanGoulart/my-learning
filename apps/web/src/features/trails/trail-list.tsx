@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Map } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/shared/empty-state";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { useTrails } from "./queries";
 
@@ -11,7 +16,13 @@ export function TrailList() {
   const trails = useTrails();
   if (trails.isPending)
     return (
-      <p className="text-sm text-muted-foreground">Carregando trilhas...</p>
+      <ul className="grid gap-3" aria-label="Carregando trilhas">
+        {Array.from({ length: 3 }, (_, index) => (
+          <li key={index}>
+            <Skeleton className="h-28 w-full" />
+          </li>
+        ))}
+      </ul>
     );
   if (trails.isError)
     return (
@@ -23,40 +34,58 @@ export function TrailList() {
     );
   if (trails.data.length === 0)
     return (
-      <p className="text-sm text-muted-foreground">
-        Nenhuma trilha cadastrada.
-      </p>
+      <EmptyState
+        action={
+          <Link
+            className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            href="/trilhas/nova"
+          >
+            Criar trilha
+          </Link>
+        }
+        description="Crie uma trilha para organizar seus estudos e acompanhar seu progresso."
+        icon={Map}
+        title="Nenhuma trilha cadastrada"
+      />
     );
   return (
-    <ul className="divide-y divide-border border-y border-border">
-      {trails.data.map((trail) => (
-        <li
-          className="flex items-center justify-between gap-4 py-4"
-          key={trail.id}
-        >
-          <div>
+    <ul className="grid gap-3">
+      {trails.data.map((trail) => {
+        const status = trail.isComplete
+          ? "COMPLETED"
+          : trail.isActive
+            ? "IN_PROGRESS"
+            : "NOT_STARTED";
+
+        return (
+          <li
+            className="rounded-xl border bg-card p-4 shadow-xs transition hover:border-primary/25 hover:shadow-sm"
+            key={trail.id}
+          >
             <Link
-              className="font-medium hover:underline"
+              className="block focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
               href={`/trilhas/${trail.id}`}
             >
-              {trail.title}
+              <div className="flex min-w-0 items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <h2 className="[overflow-wrap:anywhere] font-semibold">
+                    {trail.title}
+                  </h2>
+                  <p className="mt-1 [overflow-wrap:anywhere] text-sm text-muted-foreground">
+                    {trail.goal ?? "Sem objetivo"}
+                  </p>
+                </div>
+                <StatusBadge status={status} />
+              </div>
+              <Progress
+                className="mt-4"
+                label={`Progresso de ${trail.title}`}
+                value={trail.progress.percentage}
+              />
             </Link>
-            <p className="text-sm text-muted-foreground">
-              {trail.goal ?? "Sem objetivo"}
-            </p>
-          </div>
-          <div className="shrink-0 text-right text-sm">
-            <p className="tabular-nums">{trail.progress.percentage}%</p>
-            <p className="text-muted-foreground">
-              {trail.isComplete
-                ? "Concluída"
-                : trail.isActive
-                  ? "Em andamento"
-                  : "Não iniciada"}
-            </p>
-          </div>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

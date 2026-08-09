@@ -4,7 +4,11 @@ import type { ConvertResourceInput } from "@my-learning/contracts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 
+import { FormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { trailKeys } from "@/features/trails/queries";
 
 import { convertResource, previewResourceConversion } from "./api";
@@ -131,11 +135,9 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-medium">Converter recurso</h2>
-      <label className="block text-sm">
-        Nova categoria
-        <select
+      <FormField id="conversion-category" label="Nova categoria">
+        <NativeSelect
           aria-label="Nova categoria"
-          className="ml-2"
           onChange={(event) => {
             const nextCategory = event.target.value as Category;
             setCategory(nextCategory);
@@ -146,13 +148,11 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
         >
           <option value="MATERIAL">Material</option>
           <option value="PRACTICE">Prática</option>
-        </select>
-      </label>
-      <label className="block text-sm">
-        Novo formato
-        <select
+        </NativeSelect>
+      </FormField>
+      <FormField id="conversion-format" label="Novo formato">
+        <NativeSelect
           aria-label="Novo formato"
-          className="ml-2"
           onChange={(event) => {
             setFormat(event.target.value as Format);
             invalidatePreview();
@@ -164,8 +164,8 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
               {item.label}
             </option>
           ))}
-        </select>
-      </label>
+        </NativeSelect>
+      </FormField>
       <Button
         disabled={previewPending}
         onClick={() => void handlePreview()}
@@ -205,36 +205,34 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
         </div>
       ) : null}
       {category === "MATERIAL" ? (
-        <label className="block text-sm">
-          URL
-          <input
+        <FormField id="conversion-url" label="URL">
+          <Input
             aria-label="URL da conversão"
-            className="mt-1 block w-full"
             onChange={(event) => setUrl(event.target.value)}
             type="url"
             value={url}
           />
-        </label>
+        </FormField>
       ) : null}
       {format === "QUESTION" || format === "PROBLEM" || format === "PROJECT" ? (
-        <label className="block text-sm">
-          Enunciado
-          <textarea
+        <FormField id="conversion-prompt" label="Enunciado">
+          <Textarea
             aria-label="Enunciado da conversão"
-            className="mt-1 block w-full"
             onChange={(event) => setPrompt(event.target.value)}
             value={prompt}
           />
-        </label>
+        </FormField>
       ) : null}
       {format === "PROJECT" ? (
         <div className="space-y-2">
           {requirements.map((requirement, index) => (
-            <label className="block text-sm" key={index}>
-              Requisito {index + 1}
-              <input
+            <FormField
+              id={`conversion-requirement-${index}`}
+              key={index}
+              label={`Requisito ${index + 1}`}
+            >
+              <Input
                 aria-label={`Requisito ${index + 1} da conversão`}
-                className="mt-1 block w-full"
                 onChange={(event) =>
                   setRequirements((current) =>
                     current.map((item, itemIndex) =>
@@ -244,7 +242,7 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
                 }
                 value={requirement}
               />
-            </label>
+            </FormField>
           ))}
           <Button
             onClick={() => setRequirements((current) => [...current, ""])}
@@ -257,24 +255,20 @@ export function ResourceConversion({ resourceId }: { resourceId: string }) {
       ) : null}
       {format === "FLASHCARD" ? (
         <div className="space-y-2">
-          <label className="block text-sm">
-            Frente
-            <textarea
+          <FormField id="conversion-flashcard-front" label="Frente">
+            <Textarea
               aria-label="Frente da conversão"
-              className="mt-1 block w-full"
               onChange={(event) => setFlashcardFront(event.target.value)}
               value={flashcardFront}
             />
-          </label>
-          <label className="block text-sm">
-            Verso
-            <textarea
+          </FormField>
+          <FormField id="conversion-flashcard-back" label="Verso">
+            <Textarea
               aria-label="Verso da conversão"
-              className="mt-1 block w-full"
               onChange={(event) => setFlashcardBack(event.target.value)}
               value={flashcardBack}
             />
-          </label>
+          </FormField>
         </div>
       ) : null}
       {preview ? (

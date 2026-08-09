@@ -1,4 +1,5 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createResourceInputSchema,
@@ -6,17 +7,18 @@ import {
 } from "@my-learning/contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import {
-  cloneElement,
-  isValidElement,
-  type ReactElement,
-  useEffect,
-} from "react";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { FormField } from "@/components/shared/form-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { trailKeys } from "@/features/trails/queries";
+
 import { createResource, updateResource } from "./api";
 import { resourceKeys } from "./queries";
 
@@ -143,13 +145,13 @@ export function ResourceForm({
           </AlertDescription>
         </Alert>
       ) : null}
-      <Field
+      <FormField
         error={form.formState.errors.title?.message}
         id="resource-title"
         label="Título"
       >
-        <input {...form.register("title")} />
-      </Field>
+        <Input {...form.register("title")} />
+      </FormField>
       {mode === "edit" ? (
         <div className="space-y-2">
           <p className="text-sm font-medium">Categoria</p>
@@ -157,12 +159,12 @@ export function ResourceForm({
           <input type="hidden" {...form.register("category")} />
         </div>
       ) : (
-        <Field
+        <FormField
           error={form.formState.errors.category?.message}
           id="resource-category"
           label="Categoria"
         >
-          <select
+          <NativeSelect
             {...form.register("category", {
               onChange: () => form.resetField("format"),
             })}
@@ -170,8 +172,8 @@ export function ResourceForm({
             <option value="">Selecione uma categoria</option>
             <option value="MATERIAL">Material</option>
             <option value="PRACTICE">Prática</option>
-          </select>
-        </Field>
+          </NativeSelect>
+        </FormField>
       )}
       {mode === "edit" ? (
         <div className="space-y-2">
@@ -180,45 +182,45 @@ export function ResourceForm({
           <input type="hidden" {...form.register("format")} />
         </div>
       ) : (
-        <Field
+        <FormField
           error={form.formState.errors.format?.message}
           id="resource-format"
           label="Formato"
         >
-          <select {...form.register("format")} disabled={!category}>
+          <NativeSelect {...form.register("format")} disabled={!category}>
             <option value="">Selecione um formato</option>
             {(category ? formats[category] : []).map((item) => (
               <option key={item.value} value={item.value}>
                 {item.label}
               </option>
             ))}
-          </select>
-        </Field>
+          </NativeSelect>
+        </FormField>
       )}
-      <Field
+      <FormField
         error={form.formState.errors.description?.message}
         id="resource-description"
         label="Descrição"
       >
-        <textarea {...form.register("description")} />
-      </Field>
+        <Textarea {...form.register("description")} />
+      </FormField>
       {category === "MATERIAL" ? (
-        <Field
+        <FormField
           error={form.formState.errors.url?.message}
           id="resource-url"
           label="URL"
         >
-          <input type="url" {...form.register("url")} />
-        </Field>
+          <Input type="url" {...form.register("url")} />
+        </FormField>
       ) : null}
       {["QUESTION", "PROBLEM", "PROJECT"].includes(format) ? (
-        <Field
+        <FormField
           error={form.formState.errors.prompt?.message}
           id="resource-prompt"
           label="Enunciado"
         >
-          <textarea {...form.register("prompt")} />
-        </Field>
+          <Textarea {...form.register("prompt")} />
+        </FormField>
       ) : null}
       {format === "PROJECT" && mode === "edit" ? (
         <section className="space-y-2">
@@ -233,14 +235,14 @@ export function ResourceForm({
       {format === "PROJECT" && mode === "create" ? (
         <div className="space-y-2">
           {requirements.fields.map((field, index) => (
-            <Field
+            <FormField
               error={form.formState.errors.requirements?.[index]?.text?.message}
               id={`requirement-${index}`}
               key={field.id}
               label={`Requisito ${index + 1}`}
             >
-              <input {...form.register(`requirements.${index}.text`)} />
-            </Field>
+              <Input {...form.register(`requirements.${index}.text`)} />
+            </FormField>
           ))}
           <Button
             onClick={() => requirements.append({ text: "" })}
@@ -253,64 +255,25 @@ export function ResourceForm({
       ) : null}
       {format === "FLASHCARD" ? (
         <>
-          <Field
+          <FormField
             error={form.formState.errors.flashcardFront?.message}
             id="resource-front"
             label="Frente"
           >
-            <textarea {...form.register("flashcardFront")} />
-          </Field>
-          <Field
+            <Textarea {...form.register("flashcardFront")} />
+          </FormField>
+          <FormField
             error={form.formState.errors.flashcardBack?.message}
             id="resource-back"
             label="Verso"
           >
-            <textarea {...form.register("flashcardBack")} />
-          </Field>
+            <Textarea {...form.register("flashcardBack")} />
+          </FormField>
         </>
       ) : null}
       <Button disabled={form.formState.isSubmitting} type="submit">
-        Salvar
+        {form.formState.isSubmitting ? "Salvando..." : "Salvar"}
       </Button>
     </form>
-  );
-}
-function Field({
-  children,
-  error,
-  id,
-  label,
-}: {
-  children: React.ReactNode;
-  error?: string | undefined;
-  id: string;
-  label: string;
-}) {
-  const errorId = `${id}-error`;
-  return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium" htmlFor={id}>
-        {label}
-      </label>
-      {isValidElement(children)
-        ? cloneElement(
-            children as ReactElement<{
-              id?: string;
-              "aria-invalid"?: boolean;
-              "aria-describedby"?: string;
-            }>,
-            {
-              id,
-              "aria-invalid": Boolean(error),
-              ...(error ? { "aria-describedby": errorId } : {}),
-            },
-          )
-        : children}
-      {error ? (
-        <p className="text-sm text-destructive" id={errorId} role="alert">
-          {error}
-        </p>
-      ) : null}
-    </div>
   );
 }

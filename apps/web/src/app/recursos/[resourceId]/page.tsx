@@ -5,9 +5,5 @@ export default async function ResourcePage({
   params: Promise<{ resourceId: string }>;
 }) {
   const { resourceId } = await params;
-  return (
-    <main>
-      <ResourceDetail resourceId={resourceId} />
-    </main>
-  );
+  return <ResourceDetail resourceId={resourceId} />;
 }

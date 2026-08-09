@@ -95,7 +95,9 @@ describe("ResourceForm", () => {
     await user.click(screen.getByRole("button", { name: "Salvar" }));
 
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Salvar" })).toBeDisabled(),
+      expect(
+        screen.getByRole("button", { name: "Salvando..." }),
+      ).toBeDisabled(),
     );
   });
 
