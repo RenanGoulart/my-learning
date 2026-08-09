@@ -15,7 +15,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           <ThemeToggle />
         </div>
       </header>
-      <main className="mx-auto max-w-6xl p-4 lg:ml-60 lg:p-8">{children}</main>
+      <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:ml-64 lg:p-8">
+        {children}
+      </main>
     </div>
   );
 }

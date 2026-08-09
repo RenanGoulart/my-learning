@@ -1,8 +1,25 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { AppShell } from "./app-shell.js";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/trilhas",
+}));
+
+vi.mock("@/features/dashboard/queries", () => ({
+  useDashboard: () => ({
+    data: {
+      continueStudying: [
+        {
+          resourceId: "550e8400-e29b-41d4-a716-446655440001",
+          resourceTitle: "HTTP",
+        },
+      ],
+    },
+  }),
+}));
 
 describe("AppShell", () => {
   it("renders the operational destinations", () => {
@@ -28,6 +45,13 @@ describe("AppShell", () => {
       "href",
       "/configuracoes",
     );
+    expect(screen.getByRole("link", { name: "Trilhas" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(
+      screen.getByRole("link", { name: /Continuar HTTP/ }),
+    ).toHaveAttribute("href", "/recursos/550e8400-e29b-41d4-a716-446655440001");
   });
 
   it("opens and closes the mobile sheet accessibly", async () => {
@@ -44,6 +68,21 @@ describe("AppShell", () => {
     expect(screen.getByRole("dialog")).toHaveAttribute("aria-modal", "true");
     await user.keyboard("{Escape}");
     expect(trigger).toHaveFocus();
+  });
+
+  it("describes the icon-only mobile navigation trigger on hover", async () => {
+    const user = userEvent.setup();
+    render(
+      <AppShell>
+        <main>Conteudo</main>
+      </AppShell>,
+    );
+
+    const trigger = screen.getByRole("button", { name: /Abrir navega/ });
+    await user.hover(trigger);
+
+    expect(trigger).toHaveAttribute("data-popup-open");
+    expect(screen.getByText(/Abrir navega/)).toBeInTheDocument();
   });
 
   it("closes the mobile sheet when navigating", async () => {

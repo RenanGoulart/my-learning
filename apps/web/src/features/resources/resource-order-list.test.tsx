@@ -3,6 +3,12 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ResourceOrderList } from "./resource-order-list";
+
+const resourcePresentation = {
+  category: "MATERIAL" as const,
+  format: "DOCUMENTATION" as const,
+  status: "IN_PROGRESS" as const,
+};
 const { reorderResources } = vi.hoisted(() => ({
   reorderResources: vi.fn().mockResolvedValue([]),
 }));
@@ -18,6 +24,7 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
           ]}
         />
@@ -28,6 +35,33 @@ describe("ResourceOrderList", () => {
       "href",
       "/recursos/00000000-0000-4000-8000-000000000011",
     );
+  });
+
+  it("shows the drag handle tooltip using its accessible name", async () => {
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceOrderList
+          trailId="00000000-0000-4000-8000-000000000001"
+          resources={[
+            {
+              id: "00000000-0000-4000-8000-000000000011",
+              title: "Primeiro",
+              position: 1,
+              ...resourcePresentation,
+            },
+          ]}
+        />
+      </QueryClientProvider>,
+    );
+
+    const dragHandle = screen.getByRole("button", {
+      name: "Arrastar Primeiro",
+    });
+
+    await user.hover(dragHandle);
+
+    expect(dragHandle).toHaveAttribute("data-popup-open");
   });
 
   it("moves a resource down through its accessible action", async () => {
@@ -41,11 +75,13 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
             {
               id: "00000000-0000-4000-8000-000000000012",
               title: "Segundo",
               position: 2,
+              ...resourcePresentation,
             },
           ]}
         />
@@ -76,11 +112,13 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
             {
               id: "00000000-0000-4000-8000-000000000012",
               title: "Segundo",
               position: 2,
+              ...resourcePresentation,
             },
           ]}
         />
@@ -113,11 +151,13 @@ describe("ResourceOrderList", () => {
               id: "00000000-0000-4000-8000-000000000011",
               title: "Primeiro",
               position: 1,
+              ...resourcePresentation,
             },
             {
               id: "00000000-0000-4000-8000-000000000012",
               title: "Segundo",
               position: 2,
+              ...resourcePresentation,
             },
           ]}
         />

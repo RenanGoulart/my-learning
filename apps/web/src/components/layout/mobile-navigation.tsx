@@ -11,6 +11,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MenuIcon } from "lucide-react";
 
 export function MobileNavigation() {
@@ -18,13 +24,26 @@ export function MobileNavigation() {
 
   return (
     <Sheet modal onOpenChange={setOpen} open={open}>
-      <SheetTrigger
-        render={
-          <Button aria-label="Abrir navegação" size="icon" variant="outline">
-            <MenuIcon />
-          </Button>
-        }
-      />
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <SheetTrigger
+                render={
+                  <Button
+                    aria-label="Abrir navegação"
+                    size="icon"
+                    variant="outline"
+                  >
+                    <MenuIcon />
+                  </Button>
+                }
+              />
+            }
+          />
+          <TooltipContent>Abrir navega&#231;&#227;o</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <SheetContent aria-modal="true" side="left">
         <SheetHeader>
           <SheetTitle>Navegação</SheetTitle>
