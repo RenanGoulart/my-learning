@@ -55,7 +55,7 @@ describe("PracticeAnswer", () => {
         screen.getByRole("button", { name: "Salvando..." }),
       ).toBeDisabled();
     } finally {
-      await act(async () => {
+      act(() => {
         rejectSave(new Error("Falha ao salvar"));
       });
     }

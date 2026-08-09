@@ -16,7 +16,9 @@ const destinations = [
 ] as const;
 
 const isActive = (pathname: string, href: string) =>
-  href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+  href === "/"
+    ? pathname === "/"
+    : pathname === href || pathname.startsWith(`${href}/`);
 
 export function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -31,9 +33,7 @@ export function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
           <Link
             aria-current={active ? "page" : undefined}
             className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted ${
-              active
-                ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                : ""
+              active ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""
             }`}
             href={destination.href}
             key={destination.href}

@@ -20,7 +20,10 @@ it("forwards form semantics and exposes progress accessibly", () => {
     </>,
   );
 
-  expect(screen.getByLabelText("Título")).toHaveAttribute("aria-invalid", "true");
+  expect(screen.getByLabelText("Título")).toHaveAttribute(
+    "aria-invalid",
+    "true",
+  );
   expect(screen.getByLabelText("Descrição").tagName).toBe("TEXTAREA");
   expect(screen.getByLabelText("Categoria")).toHaveValue("MATERIAL");
   expect(

@@ -66,10 +66,12 @@ export function TrailList() {
               className="block focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
               href={`/trilhas/${trail.id}`}
             >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-semibold">{trail.title}</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
+              <div className="flex min-w-0 items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <h2 className="[overflow-wrap:anywhere] font-semibold">
+                    {trail.title}
+                  </h2>
+                  <p className="mt-1 [overflow-wrap:anywhere] text-sm text-muted-foreground">
                     {trail.goal ?? "Sem objetivo"}
                   </p>
                 </div>

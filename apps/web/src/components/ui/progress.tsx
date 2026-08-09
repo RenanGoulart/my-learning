@@ -17,7 +17,10 @@ function Progress({
       aria-valuemax={100}
       aria-valuemin={0}
       aria-valuenow={normalized}
-      className={cn("h-2 overflow-hidden rounded-full bg-primary/10", className)}
+      className={cn(
+        "h-2 overflow-hidden rounded-full bg-primary/10",
+        className,
+      )}
       role="progressbar"
     >
       <div

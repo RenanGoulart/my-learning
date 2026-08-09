@@ -25,26 +25,26 @@ export function PageHeader({
       {breadcrumbs ? (
         <nav
           aria-label="Breadcrumb"
-          className="mb-4 text-sm text-muted-foreground"
+          className="mb-4 min-w-0 [overflow-wrap:anywhere] text-sm text-muted-foreground"
         >
           {breadcrumbs}
         </nav>
       ) : null}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-start gap-3">
+      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
             <Icon aria-hidden className="size-5" />
           </span>
-          <div>
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm font-medium text-primary">{eyebrow}</p>
               {status}
             </div>
-            <h1 className="mt-1 font-heading text-2xl font-semibold tracking-tight">
+            <h1 className="mt-1 [overflow-wrap:anywhere] font-heading text-2xl font-semibold tracking-tight">
               {title}
             </h1>
             {description ? (
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 [overflow-wrap:anywhere] text-sm text-muted-foreground">
                 {description}
               </p>
             ) : null}

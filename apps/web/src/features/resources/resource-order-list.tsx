@@ -131,7 +131,7 @@ function SortableResource({
         transition: sortable.transition,
       }}
     >
-      <div className="flex min-w-0 items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <Tooltip>
           <TooltipTrigger
             render={
@@ -154,14 +154,14 @@ function SortableResource({
           className="size-8 rounded-lg [&_svg]:size-4"
           format={resource.format}
         />
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <Link
-            className="truncate font-medium underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="block truncate font-medium underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             href={`/recursos/${resource.id}`}
           >
             {resource.title}
           </Link>
-          <p className="text-xs text-muted-foreground">
+          <p className="truncate text-xs text-muted-foreground">
             {resource.category === "MATERIAL" ? "Material" : "Prática"} ·{" "}
             {resource.format}
           </p>

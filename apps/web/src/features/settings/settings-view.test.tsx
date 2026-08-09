@@ -27,7 +27,7 @@ vi.mock("./api", () => ({
 import { SettingsView } from "./settings-view.js";
 
 describe("SettingsView", () => {
-  it("organizes settings into storage, export, and restore regions", async () => {
+  it("organizes settings into storage, export, and restore regions", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <SettingsView />

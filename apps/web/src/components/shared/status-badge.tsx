@@ -29,7 +29,7 @@ export function StatusBadge({ status }: { status: ResourceSummary["status"] }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold",
         item.className,
       )}
     >

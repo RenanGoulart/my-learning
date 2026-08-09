@@ -23,7 +23,7 @@ Data da verificação: 08-08-2026.
 
 Comando: `rtk pnpm test:e2e`
 
-Resultado: 12 testes aprovados em 1,4 minuto — projetos `desktop` e `mobile`, incluindo Dashboard, operação local, acompanhamento/histórico, trilhas/recursos e o caso de tema escuro.
+Resultado: 12 testes aprovados em 2,3 minutos — projetos `desktop` e `mobile`, incluindo Dashboard, operação local, acompanhamento/histórico, trilhas/recursos e o caso de tema escuro.
 
 ## Observações de correção confirmadas
 

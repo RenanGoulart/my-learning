@@ -16,7 +16,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="flex min-h-48 flex-col items-center justify-center text-center">
-      <span className="grid size-12 place-items-center rounded-2xl bg-muted text-muted-foreground">
+      <span className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
         <Icon aria-hidden className="size-6" />
       </span>
       <h2 className="mt-4 font-heading text-lg font-semibold">{title}</h2>

@@ -12,6 +12,21 @@ vi.mock("./api", () => ({ getResource }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
 describe("ResourceDetail", () => {
+  it("announces a structured loading placeholder while the resource is pending", () => {
+    getResource.mockImplementationOnce(() => new Promise(() => undefined));
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ResourceDetail resourceId="00000000-0000-4000-8000-000000000001" />
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByRole("status", { name: "Carregando recurso" }),
+    ).toBeVisible();
+    expect(screen.queryByText("Carregando recurso...")).not.toBeInTheDocument();
+  });
+
   it("composes the material detail header and external-resource action", async () => {
     getResource.mockResolvedValueOnce({
       id: "00000000-0000-4000-8000-000000000001",

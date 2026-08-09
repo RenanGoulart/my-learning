@@ -3,6 +3,51 @@ import { expect, test } from "@playwright/test";
 import { expectNoAccessibilityViolations } from "./accessibility";
 
 test.describe("trilhas e recursos", () => {
+  test("keeps long headers and resources inside the mobile viewport", async ({
+    page,
+  }) => {
+    const longTrailTitle = `Trilha-${"MuitoLonga".repeat(16)}`;
+    const longResourceTitle = `Recurso-${"SemEspacos".repeat(16)}`;
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/trilhas/nova");
+    await page.getByLabel(/^T.tulo$/).fill(longTrailTitle);
+    await page.getByRole("button", { name: "Salvar" }).click();
+
+    await expect(
+      page.getByRole("heading", { level: 1, name: longTrailTitle }),
+    ).toBeVisible();
+    const trailPath = page.url();
+    expect(
+      await page.locator("body").evaluate((body) => body.scrollWidth),
+    ).toBeLessThanOrEqual(390);
+
+    await page
+      .locator("header")
+      .getByRole("button", { name: "Novo recurso" })
+      .click();
+    await page.getByLabel(/^T.tulo$/).fill(longResourceTitle);
+    await page.getByLabel("Categoria").selectOption("MATERIAL");
+    await page.getByLabel("Formato").selectOption("COURSE");
+    await page.getByRole("button", { name: "Salvar" }).click();
+    await page.goto(trailPath);
+
+    await expect(
+      page.getByRole("link", { name: longResourceTitle }),
+    ).toBeVisible();
+    expect(
+      await page.locator("body").evaluate((body) => body.scrollWidth),
+    ).toBeLessThanOrEqual(390);
+    await expectNoAccessibilityViolations(page);
+
+    await page.goto("/trilhas");
+    await expect(
+      page.getByRole("link", { name: longTrailTitle }),
+    ).toBeVisible();
+    expect(
+      await page.locator("body").evaluate((body) => body.scrollWidth),
+    ).toBeLessThanOrEqual(390);
+  });
+
   test("cria, ordena, progride, converte e exclui recursos", async ({
     page,
   }) => {

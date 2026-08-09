@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PracticeAnswer } from "@/features/practices/practice-answer";
 
 import { DeleteResourceButton } from "./delete-resource-button";
@@ -31,7 +32,7 @@ const formatLabels = {
 
 export function ResourceDetail({ resourceId }: { resourceId: string }) {
   const resource = useResource(resourceId);
-  if (resource.isPending) return <p>Carregando recurso...</p>;
+  if (resource.isPending) return <ResourceDetailSkeleton />;
   if (resource.isError)
     return (
       <Alert variant="destructive">
@@ -157,6 +158,33 @@ export function ResourceDetail({ resourceId }: { resourceId: string }) {
           <ResourceConversion resourceId={item.id} />
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function ResourceDetailSkeleton() {
+  return (
+    <div aria-label="Carregando recurso" className="space-y-6" role="status">
+      <div className="rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/10 via-primary/5 to-card p-5 sm:p-6">
+        <div className="flex items-start gap-3">
+          <Skeleton className="size-10 shrink-0 rounded-xl" />
+          <div className="flex-1 space-y-3">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-8 w-3/5" />
+            <Skeleton className="h-4 w-4/5" />
+          </div>
+        </div>
+      </div>
+      {["status", "conversion"].map((section) => (
+        <Card key={section}>
+          <CardHeader>
+            <Skeleton className="h-5 w-28" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-16 w-full" />
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
